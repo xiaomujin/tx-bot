@@ -1,0 +1,7 @@
+bot:
+  appId: 102072130
+  clientToken: Lj0PWZAMztCEwr0UGk2jiJsxyY0Ctvhx
+  clientSecret: suswwzxutwv02AEM
+
+server:
+  port: 8210
