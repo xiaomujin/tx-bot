@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
 import com.neko.txbot.menu.TxApi;
+import com.neko.txbot.task.BotAsyncTask;
 import com.neko.txbot.util.OkHttpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,18 +13,12 @@ import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketHttpHeaders;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
@@ -31,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 public class WSCHandler implements ApplicationRunner {
 
     private final BotConfig botConfig;
+    private final BotAsyncTask botAsyncTask;
 
     private long expiresOn = 0L;
 
@@ -39,10 +35,8 @@ public class WSCHandler implements ApplicationRunner {
         log.info("Start Link!");
         refreshAccessToken();
         String websocketUrl = getWebsocketUrl();
-        log.info(websocketUrl);
-
         StandardWebSocketClient client = new StandardWebSocketClient();
-        WebSocketClientHandler handler = new WebSocketClientHandler();
+        WebSocketClientHandler handler = new WebSocketClientHandler(botAsyncTask);
         WebSocketConnectionManager manager = new WebSocketConnectionManager(client, handler, URI.create(websocketUrl));
         manager.start();
     }
