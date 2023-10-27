@@ -55,6 +55,19 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
                     data.put("seq", bot.getS());
                     TxPayload sendPayload = new TxPayload(OpCode.RESUME, data, null, null);
                     session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+                } else {
+                    JSONObject data = new JSONObject();
+//            data.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
+                    data.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
+                    data.put("intents", 1 << 30);
+                    data.put("shard", List.of(0, 1));
+                    JSONObject properties = new JSONObject();
+                    data.put("properties", properties);
+                    properties.put("$os", "linux");
+                    properties.put("$browser", "Neko_browser");
+                    properties.put("$device", "Neko_device");
+                    TxPayload sendPayload = new TxPayload(2, data, null, null);
+                    session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
                 }
             }
             case OpCode.RECONNECT -> {
@@ -79,21 +92,6 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         log.warn("afterConnectionEstablished {}", session.getId());
         bot.setSession(session);
-        //鉴权
-        if (!bot.isReconnect()) {
-            JSONObject d = new JSONObject();
-//            d.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
-            d.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
-            d.put("intents", 1 << 30);
-            d.put("shard", List.of(0, 1));
-            JSONObject properties = new JSONObject();
-            d.put("properties", properties);
-            properties.put("$os", "linux");
-            properties.put("$browser", "Neko_browser");
-            properties.put("$device", "Neko_device");
-            TxPayload sendPayload = new TxPayload(2, d, null, null);
-            session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
-        }
     }
 
 
