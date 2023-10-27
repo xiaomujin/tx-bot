@@ -34,9 +34,8 @@ public class Bot {
     public void startHeart(int time) {
         if (heartTimer != null) {
             heartTimer.cancel();
-        } else {
-            heartTimer = new Timer("bot-heart-0");
         }
+        heartTimer = new Timer("bot-heart-0");
         heartTimer.schedule(new TimerTask() {
             @Override
             public void run() {
