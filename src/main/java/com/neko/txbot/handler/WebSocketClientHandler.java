@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
@@ -37,23 +38,31 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
             case OpCode.ERROR -> log.error("返回数据错误");
             case OpCode.DISPATCH -> {
                 JSONObject d = payload.getJSONObject(D);
-                bot.setSessionId(d.getString("session_id"));
-                bot.setUserId(d.getJSONObject("user").getString("id"));
+                if (s.equals(1L)) {
+                    bot.setSessionId(d.getString("session_id"));
+                    bot.setUserId(d.getJSONObject("user").getString("id"));
+                }
             }
             case OpCode.HELLO -> {
                 JSONObject d = payload.getJSONObject(D);
                 int time = d.getIntValue(HEARTBEAT_INTERVAL);
                 bot.startHeart(time);
+                if (bot.isReconnect()) {
+                    JSONObject data = new JSONObject();
+//            data.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
+                    data.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
+                    data.put("session_id", bot.getSessionId());
+                    data.put("seq", bot.getS());
+                    TxPayload sendPayload = new TxPayload(OpCode.RESUME, data, null, null);
+                    session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+                }
             }
             case OpCode.RECONNECT -> {
                 log.warn("重新连接");
-                JSONObject d = new JSONObject();
-//            d.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
-                d.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
-                d.put("session_id", bot.getSessionId());
-                d.put("seq", bot.getS());
-                TxPayload sendPayload = new TxPayload(OpCode.RESUME, d, null, null);
-                session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+                WebSocketConnectionManager manager = bot.getManager();
+                manager.stop();
+                bot.setReconnect(true);
+                manager.start();
             }
             case OpCode.HEARTBEAT_ACK -> {
             }
@@ -71,18 +80,20 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
         log.warn("afterConnectionEstablished {}", session.getId());
         bot.setSession(session);
         //鉴权
-        JSONObject d = new JSONObject();
+        if (!bot.isReconnect()) {
+            JSONObject d = new JSONObject();
 //            d.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
-        d.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
-        d.put("intents", 1 << 30);
-        d.put("shard", List.of(0, 1));
-        JSONObject properties = new JSONObject();
-        d.put("properties", properties);
-        properties.put("$os", "linux");
-        properties.put("$browser", "Neko_browser");
-        properties.put("$device", "Neko_device");
-        TxPayload sendPayload = new TxPayload(2, d, null, null);
-        session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+            d.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
+            d.put("intents", 1 << 30);
+            d.put("shard", List.of(0, 1));
+            JSONObject properties = new JSONObject();
+            d.put("properties", properties);
+            properties.put("$os", "linux");
+            properties.put("$browser", "Neko_browser");
+            properties.put("$device", "Neko_device");
+            TxPayload sendPayload = new TxPayload(2, d, null, null);
+            session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+        }
     }
 
 

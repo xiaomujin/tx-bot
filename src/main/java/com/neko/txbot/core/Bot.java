@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.client.WebSocketConnectionManager;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -20,10 +21,12 @@ import java.util.TimerTask;
 public class Bot {
     private Timer heartTimer;
     private WebSocketSession session;
+    private WebSocketConnectionManager manager;
     private Long s;
     private BotConfig botConfig;
     private String sessionId;
     private String userId;
+    private boolean isReconnect = false;
 
     private final static String OP = "op";
     private final static String D = "d";

@@ -41,6 +41,7 @@ public class WSCHandler implements ApplicationRunner {
         bot.setBotConfig(botConfig);
         WebSocketClientHandler handler = new WebSocketClientHandler(botAsyncTask, bot);
         WebSocketConnectionManager manager = new WebSocketConnectionManager(client, handler, URI.create(websocketUrl));
+        bot.setManager(manager);
         manager.start();
     }
 
