@@ -4,6 +4,7 @@ package com.neko.txbot.handler;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
+import com.neko.txbot.core.Bot;
 import com.neko.txbot.menu.TxApi;
 import com.neko.txbot.task.BotAsyncTask;
 import com.neko.txbot.util.OkHttpUtil;
@@ -26,6 +27,7 @@ import java.time.Instant;
 public class WSCHandler implements ApplicationRunner {
 
     private final BotConfig botConfig;
+    private final Bot bot;
     private final BotAsyncTask botAsyncTask;
 
     private long expiresOn = 0L;
@@ -36,7 +38,8 @@ public class WSCHandler implements ApplicationRunner {
         refreshAccessToken();
         String websocketUrl = getWebsocketUrl();
         StandardWebSocketClient client = new StandardWebSocketClient();
-        WebSocketClientHandler handler = new WebSocketClientHandler(botAsyncTask);
+        bot.setBotConfig(botConfig);
+        WebSocketClientHandler handler = new WebSocketClientHandler(botAsyncTask, bot);
         WebSocketConnectionManager manager = new WebSocketConnectionManager(client, handler, URI.create(websocketUrl));
         manager.start();
     }
