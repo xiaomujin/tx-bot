@@ -32,7 +32,7 @@ public class Bot {
         if (heartTimer != null) {
             heartTimer.cancel();
         } else {
-            heartTimer = new Timer();
+            heartTimer = new Timer("bot-heart-0");
         }
         heartTimer.schedule(new TimerTask() {
             @Override
