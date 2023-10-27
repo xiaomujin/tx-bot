@@ -45,6 +45,16 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
                 int time = d.getIntValue(HEARTBEAT_INTERVAL);
                 bot.startHeart(time);
             }
+            case OpCode.RECONNECT -> {
+                log.warn("重新连接");
+                JSONObject d = new JSONObject();
+//            d.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
+                d.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
+                d.put("session_id", bot.getSessionId());
+                d.put("seq", bot.getS());
+                TxPayload sendPayload = new TxPayload(OpCode.RESUME, d, null, null);
+                session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+            }
             case OpCode.HEARTBEAT_ACK -> {
             }
             default -> botAsyncTask.execHandlerMsg(bot, payload);
