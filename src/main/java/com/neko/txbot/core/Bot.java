@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
 import com.neko.txbot.menu.OpCode;
+import com.neko.txbot.model.TxPayload;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,16 +41,41 @@ public class Bot {
         heartTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                send(OpCode.HEARTBEAT);
+                sendHeart();
             }
         }, 2000, time);
     }
 
-    public void send(int op) {
+    private void sendHeart() {
+        send(OpCode.HEARTBEAT, s);
+    }
+
+    public void sendIdentify() {
+        JSONObject payload = new JSONObject();
+        payload.put("token", getToken());
+        payload.put("intents", 1 << 30 | 1 << 18 | 1 << 12 | 1 << 10 | 1 << 1 | 1 << 0);
+        payload.put("shard", List.of(0, 1));
+        JSONObject properties = new JSONObject();
+        payload.put("properties", properties);
+        properties.put("$os", "linux");
+        properties.put("$browser", "Neko_browser");
+        properties.put("$device", "Neko_device");
+        send(OpCode.IDENTIFY, payload);
+    }
+
+    public void sendReconnect() {
+        JSONObject payload = new JSONObject();
+        payload.put("token", "QQBot " + getToken());
+        payload.put("session_id", sessionId);
+        payload.put("seq", s);
+        send(OpCode.RESUME, payload);
+    }
+
+    public void send(int op, Object d) {
         JSONObject payload = new JSONObject();
         payload.put(OP, op);
-        payload.put(D, s);
-        log.info("=====> {}", payload);
+        payload.put(D, d);
+        log.info("=====> {}", payload.toJSONString());
         try {
             session.sendMessage(new TextMessage(JSON.toJSONBytes(payload)));
         } catch (IOException e) {
@@ -61,5 +88,9 @@ public class Bot {
             return;
         }
         this.s = s;
+    }
+
+    public String getToken() {
+        return "QQBot " + botConfig.getAccessToken();
     }
 }

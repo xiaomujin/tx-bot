@@ -48,26 +48,9 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
                 int time = d.getIntValue(HEARTBEAT_INTERVAL);
                 bot.startHeart(time);
                 if (bot.isReconnect()) {
-                    JSONObject data = new JSONObject();
-//            data.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
-                    data.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
-                    data.put("session_id", bot.getSessionId());
-                    data.put("seq", bot.getS());
-                    TxPayload sendPayload = new TxPayload(OpCode.RESUME, data, null, null);
-                    session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+                    bot.sendReconnect();
                 } else {
-                    JSONObject data = new JSONObject();
-//            data.put("token", "Bot " + botConfig.getAppId() + "." + bot.getBotConfig().getClientToken());
-                    data.put("token", "QQBot " + bot.getBotConfig().getAccessToken());
-                    data.put("intents", 1 << 30);
-                    data.put("shard", List.of(0, 1));
-                    JSONObject properties = new JSONObject();
-                    data.put("properties", properties);
-                    properties.put("$os", "linux");
-                    properties.put("$browser", "Neko_browser");
-                    properties.put("$device", "Neko_device");
-                    TxPayload sendPayload = new TxPayload(2, data, null, null);
-                    session.sendMessage(new TextMessage(JSON.toJSONBytes(sendPayload)));
+                    bot.sendIdentify();
                 }
             }
             case OpCode.RECONNECT -> {
