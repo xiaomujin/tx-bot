@@ -35,10 +35,10 @@ public class WSCHandler implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         log.info("Start Link!");
+        bot.setBotConfig(botConfig);
         refreshAccessToken();
         String websocketUrl = getWebsocketUrl();
         StandardWebSocketClient client = new StandardWebSocketClient();
-        bot.setBotConfig(botConfig);
         WebSocketClientHandler handler = new WebSocketClientHandler(botAsyncTask, bot);
         WebSocketConnectionManager manager = new WebSocketConnectionManager(client, handler, URI.create(websocketUrl));
         bot.setManager(manager);
@@ -46,12 +46,7 @@ public class WSCHandler implements ApplicationRunner {
     }
 
     private String getWebsocketUrl() {
-        OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
-        Headers headers = new Headers.Builder()
-                .add("Authorization", "QQBot " + botConfig.getAccessToken())
-                .add("X-Union-Appid", botConfig.getAppId())
-                .build();
-        String get = OkHttpUtil.get(okHttpClient, TxApi.GATEWAY, headers);
+        String get = bot.httpGet(TxApi.GATEWAY);
         JSONObject res = JSON.parseObject(get);
         return res.getString("url");
     }

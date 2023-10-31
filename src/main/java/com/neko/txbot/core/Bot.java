@@ -4,9 +4,13 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
 import com.neko.txbot.menu.OpCode;
+import com.neko.txbot.menu.TxApi;
 import com.neko.txbot.model.TxPayload;
+import com.neko.txbot.util.OkHttpUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -92,5 +96,31 @@ public class Bot {
 
     public String getToken() {
         return "QQBot " + botConfig.getAccessToken();
+    }
+
+
+    private Headers getHeaders() {
+        return new Headers.Builder()
+                .add("Authorization", "QQBot " + botConfig.getAccessToken())
+                .add("X-Union-Appid", botConfig.getAppId())
+                .build();
+    }
+
+    public String httpGet(String url) {
+        OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
+        return OkHttpUtil.get(okHttpClient, url, getHeaders());
+    }
+
+    public String httpPost(String url, JSONObject bodyJson) {
+        OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
+        return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders());
+    }
+
+    public void sendChannelMsg(String channelId, String atMsgId) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("content", "收到了");
+        jsonObject.put("msg_id", atMsgId);
+        String url = TxApi.TEXT_SUB_CHANNEL.replace("{channel_id}", channelId);
+        httpPost(url, jsonObject);
     }
 }

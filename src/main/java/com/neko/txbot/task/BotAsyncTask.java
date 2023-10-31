@@ -26,6 +26,13 @@ public class BotAsyncTask {
 
     @Async("botTaskExecutor")
     public void execHandlerMsg(Bot bot, JSONObject payload) throws IOException {
-
+        String t = payload.getString("t");
+        switch (t) {
+            case "AT_MESSAGE_CREATE" -> {
+                String channelId = payload.getJSONObject("d").getString("channel_id");
+                String msgId = payload.getJSONObject("d").getString("id");
+                bot.sendChannelMsg(channelId, msgId);
+            }
+        }
     }
 }

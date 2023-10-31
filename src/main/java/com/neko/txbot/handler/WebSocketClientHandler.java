@@ -41,6 +41,8 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
                 if (s.equals(1L)) {
                     bot.setSessionId(d.getString("session_id"));
                     bot.setUserId(d.getJSONObject("user").getString("id"));
+                } else {
+                    botAsyncTask.execHandlerMsg(bot, payload);
                 }
             }
             case OpCode.HELLO -> {
@@ -62,7 +64,7 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
             }
             case OpCode.HEARTBEAT_ACK -> {
             }
-            default -> botAsyncTask.execHandlerMsg(bot, payload);
+            default -> {}
         }
     }
 
