@@ -21,21 +21,17 @@ import java.io.IOException;
 public class WebSocketClientHandler extends TextWebSocketHandler {
     private final BotAsyncTask botAsyncTask;
     private final Bot bot;
-    private final static String OP = "op";
-    private final static String D = "d";
-    private final static String S = "s";
-    private final static String HEARTBEAT_INTERVAL = "heartbeat_interval";
 
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, TextMessage message) throws IOException {
         JSONObject payload = JSON.parseObject(message.getPayload());
         log.info("<===== {}", payload.toString());
-        Long s = payload.getLong(S);
+        Long s = payload.getLong("s");
         bot.setS(s);
-        switch (payload.getIntValue(OP, OpCode.ERROR)) {
+        switch (payload.getIntValue("op", OpCode.ERROR)) {
             case OpCode.ERROR -> log.error("返回数据错误");
             case OpCode.DISPATCH -> {
-                JSONObject d = payload.getJSONObject(D);
+                JSONObject d = payload.getJSONObject("d");
                 if (s.equals(1L)) {
                     bot.setSessionId(d.getString("session_id"));
                     bot.setUserId(d.getJSONObject("user").getString("id"));
@@ -44,8 +40,8 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
                 }
             }
             case OpCode.HELLO -> {
-                JSONObject d = payload.getJSONObject(D);
-                int time = d.getIntValue(HEARTBEAT_INTERVAL);
+                JSONObject d = payload.getJSONObject("d");
+                int time = d.getIntValue("heartbeat_interval");
                 bot.startHeart(time);
                 if (bot.isReconnect()) {
                     bot.sendReconnect();
@@ -62,7 +58,8 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
             }
             case OpCode.HEARTBEAT_ACK -> {
             }
-            default -> {}
+            default -> {
+            }
         }
     }
 

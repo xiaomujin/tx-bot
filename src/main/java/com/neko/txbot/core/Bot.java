@@ -34,9 +34,6 @@ public class Bot {
     private String userId;
     private boolean isReconnect = false;
 
-    private final static String OP = "op";
-    private final static String D = "d";
-
     public void startHeart(int time) {
         if (heartTimer != null) {
             heartTimer.cancel();
@@ -77,8 +74,8 @@ public class Bot {
 
     public void send(int op, Object d) {
         JSONObject payload = new JSONObject();
-        payload.put(OP, op);
-        payload.put(D, d);
+        payload.put("op", op);
+        payload.put("d", d);
         log.info("=====> {}", payload.toJSONString());
         try {
             session.sendMessage(new TextMessage(JSON.toJSONBytes(payload)));
