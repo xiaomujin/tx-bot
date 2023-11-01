@@ -5,13 +5,13 @@ import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
 import com.neko.txbot.menu.OpCode;
 import com.neko.txbot.menu.TxApi;
-import com.neko.txbot.model.TxPayload;
 import com.neko.txbot.util.OkHttpUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
@@ -69,7 +69,7 @@ public class Bot {
 
     public void sendReconnect() {
         JSONObject payload = new JSONObject();
-        payload.put("token", "QQBot " + getToken());
+        payload.put("token", getToken());
         payload.put("session_id", sessionId);
         payload.put("seq", s);
         send(OpCode.RESUME, payload);
@@ -101,7 +101,15 @@ public class Bot {
 
     private Headers getHeaders() {
         return new Headers.Builder()
-                .add("Authorization", "QQBot " + botConfig.getAccessToken())
+                .add("Authorization", getToken())
+                .add("X-Union-Appid", botConfig.getAppId())
+                .build();
+    }
+
+    private Headers getHeaders1() {
+        return new Headers.Builder()
+//                .add("Authorization", "QQBot " + botConfig.getAccessToken())
+                .add("Authorization", "Bot " + botConfig.getAppId() + "." + botConfig.getClientToken())
                 .add("X-Union-Appid", botConfig.getAppId())
                 .build();
     }
@@ -113,14 +121,20 @@ public class Bot {
 
     public String httpPost(String url, JSONObject bodyJson) {
         OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
-        return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders());
+        return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders1());
     }
 
-    public void sendChannelMsg(String channelId, String atMsgId) {
+    public String sendChannelMsg(String channelId, String atMsgId, String content) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("content", "收到了");
-        jsonObject.put("msg_id", atMsgId);
+        jsonObject.put("content", content);
+        if (StringUtils.hasText(atMsgId)) {
+            jsonObject.put("msg_id", atMsgId);
+            JSONObject messageReference = new JSONObject();
+            jsonObject.put("message_reference", messageReference);
+            messageReference.put("message_id", atMsgId);
+            messageReference.put("ignore_get_message_error", true);
+        }
         String url = TxApi.TEXT_SUB_CHANNEL.replace("{channel_id}", channelId);
-        httpPost(url, jsonObject);
+        return httpPost(url, jsonObject);
     }
 }

@@ -42,7 +42,7 @@ public class OkHttpUtil {
         Request request = new Request.Builder().url(url).headers(headers).get().build();
 
         String responseData = request(okHttpClient, url, request);
-        log.info("okHttpClient get url:{},request responseData====> {}", url, responseData);
+        log.info("okHttpClient get url:{}, request responseData====> {}", url, responseData);
         return responseData;
     }
 
@@ -188,7 +188,7 @@ public class OkHttpUtil {
         // 添加 form-data参数
         for (Map.Entry<String, Object> entry : formDataJson.entrySet()) {
             //参数通过 bodyBuilder.addFormDataPart(key, value) 添加
-            bodyBuilder.addFormDataPart(entry.getKey(), Objects.toString(entry.getValue(), ""));
+            bodyBuilder.addFormDataPart(entry.getKey(), String.valueOf(entry.getValue()));
         }
         return bodyBuilder.build();
     }
