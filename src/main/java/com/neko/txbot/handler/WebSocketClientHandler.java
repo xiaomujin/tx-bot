@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Slf4j
