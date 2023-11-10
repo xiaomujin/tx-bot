@@ -16,6 +16,9 @@ public class TarKovMarketPlugin extends BotPlugin {
     @Override
     public int onGuildChannelMessage(Bot bot, MessageEvent event) {
         log.info("TarKovMarketPlugin");
+        String content = event.getContent();
+        content = content.replaceAll("<@!.*?>", "").trim();
+        String res = bot.sendChannelMsg(event.getChannelId(), event.getId(), content);
         return MESSAGE_IGNORE;
     }
 }

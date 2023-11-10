@@ -33,11 +33,6 @@ public class BotAsyncTask {
                         break;
                     }
                 }
-//                String channelId = messageEvent.getChannelId();
-//                String msgId = messageEvent.getId();
-//                String content = messageEvent.getContent();
-//                content = content.replaceAll("<@!.*?>", "").trim();
-//                String res = bot.sendChannelMsg(channelId, msgId, content);
             }
         }
     }
