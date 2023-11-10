@@ -17,9 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -28,6 +26,7 @@ public class Bot {
     private Timer heartTimer;
     private WebSocketSession session;
     private WebSocketConnectionManager manager;
+    private List<BotPlugin> botPlugins;
     private Long s;
     private BotConfig botConfig;
     private String sessionId;

@@ -1,12 +1,10 @@
 package com.neko.txbot.core;
 
 import com.neko.txbot.dto.event.message.MessageEvent;
-import org.springframework.stereotype.Component;
 
 /**
  * <p>BotPlugin class.</p>
  */
-@Component
 public class BotPlugin {
 
     /**

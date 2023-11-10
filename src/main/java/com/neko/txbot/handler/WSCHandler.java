@@ -5,13 +5,12 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
 import com.neko.txbot.core.Bot;
+import com.neko.txbot.core.BotPlugin;
 import com.neko.txbot.menu.TxApi;
 import com.neko.txbot.task.BotAsyncTask;
 import com.neko.txbot.util.OkHttpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -20,6 +19,8 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.LinkedList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -29,6 +30,7 @@ public class WSCHandler implements ApplicationRunner {
     private final BotConfig botConfig;
     private final Bot bot;
     private final BotAsyncTask botAsyncTask;
+    private final List<BotPlugin> botPlugins;
 
     private long expiresOn = 0L;
 
@@ -36,6 +38,7 @@ public class WSCHandler implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         log.info("Start Link!");
         bot.setBotConfig(botConfig);
+        bot.setBotPlugins(botPlugins);
         refreshAccessToken();
         String websocketUrl = getWebsocketUrl();
         StandardWebSocketClient client = new StandardWebSocketClient();

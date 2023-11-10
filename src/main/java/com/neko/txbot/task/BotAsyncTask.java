@@ -2,6 +2,7 @@ package com.neko.txbot.task;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.core.Bot;
+import com.neko.txbot.core.BotPlugin;
 import com.neko.txbot.dto.event.message.MessageEvent;
 import com.neko.txbot.dto.event.message.ReadyEvent;
 import com.neko.txbot.dto.event.message.TxPayload;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @EnableAsync
 public class BotAsyncTask {
-
     @Async("botTaskExecutor")
     public void execHandlerMsg(Bot bot, JSONObject payload) {
         TxPayload txPayload = payload.to(TxPayload.class);
@@ -28,12 +28,18 @@ public class BotAsyncTask {
             }
             case "AT_MESSAGE_CREATE" -> {
                 MessageEvent messageEvent = txPayload.getD().to(MessageEvent.class);
-                String channelId = messageEvent.getChannelId();
-                String msgId = messageEvent.getId();
-                String content = messageEvent.getContent();
-                content = content.replaceAll("<@!.*?>", "").trim();
-                String res = bot.sendChannelMsg(channelId, msgId, content);
+                for (BotPlugin botPlugin : bot.getBotPlugins()) {
+                    if (botPlugin.onGuildChannelMessage(bot, messageEvent) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+//                String channelId = messageEvent.getChannelId();
+//                String msgId = messageEvent.getId();
+//                String content = messageEvent.getContent();
+//                content = content.replaceAll("<@!.*?>", "").trim();
+//                String res = bot.sendChannelMsg(channelId, msgId, content);
             }
         }
     }
 }
+

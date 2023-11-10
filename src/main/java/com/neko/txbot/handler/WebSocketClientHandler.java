@@ -27,10 +27,8 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
         bot.setS(s);
         switch (payload.getIntValue("op", OpCode.ERROR)) {
             case OpCode.ERROR -> log.error("返回数据错误");
-            case OpCode.DISPATCH -> {
-                //分发执行收到的消息
-                botAsyncTask.execHandlerMsg(bot, payload);
-            }
+            case OpCode.DISPATCH -> //分发执行收到的消息
+                    botAsyncTask.execHandlerMsg(bot, payload);
             case OpCode.HELLO -> {
                 JSONObject d = payload.getJSONObject("d");
                 int time = d.getIntValue("heartbeat_interval");
