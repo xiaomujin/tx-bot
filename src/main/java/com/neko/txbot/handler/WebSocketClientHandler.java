@@ -14,8 +14,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
-
 @Slf4j
 @RequiredArgsConstructor
 public class WebSocketClientHandler extends TextWebSocketHandler {
@@ -23,21 +21,16 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
     private final Bot bot;
 
     @Override
-    protected void handleTextMessage(@NotNull WebSocketSession session, TextMessage message) throws IOException {
+    protected void handleTextMessage(@NotNull WebSocketSession session, TextMessage message) {
         JSONObject payload = JSON.parseObject(message.getPayload());
-        log.info("<===== {}", payload.toString());
+        log.debug("<===== {}", payload.toString());
         Long s = payload.getLong("s");
         bot.setS(s);
         switch (payload.getIntValue("op", OpCode.ERROR)) {
             case OpCode.ERROR -> log.error("返回数据错误");
             case OpCode.DISPATCH -> {
-                JSONObject d = payload.getJSONObject("d");
-                if (s.equals(1L)) {
-                    bot.setSessionId(d.getString("session_id"));
-                    bot.setUserId(d.getJSONObject("user").getString("id"));
-                } else {
-                    botAsyncTask.execHandlerMsg(bot, payload);
-                }
+                //分发执行收到的消息
+                botAsyncTask.execHandlerMsg(bot, payload);
             }
             case OpCode.HELLO -> {
                 JSONObject d = payload.getJSONObject("d");
@@ -51,15 +44,12 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
             }
             case OpCode.RECONNECT -> {
                 log.warn("重新连接");
-                WebSocketConnectionManager manager = bot.getManager();
-                manager.stop();
-                bot.setReconnect(true);
-                manager.start();
+                bot.managerRestart(true);
             }
+            case OpCode.INVALID_SESSION -> log.error("参数错误:{}", payload);
             case OpCode.HEARTBEAT_ACK -> {
             }
-            default -> {
-            }
+            default -> log.warn("未知的opCode");
         }
     }
 
@@ -69,9 +59,9 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws IOException {
-        log.warn("afterConnectionEstablished {}", session.getId());
+    public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         bot.setSession(session);
+        log.debug("afterConnectionEstablished {}", session.getId());
     }
 
 

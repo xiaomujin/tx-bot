@@ -35,9 +35,7 @@ public class Bot {
     private boolean isReconnect = false;
 
     public void startHeart(int time) {
-        if (heartTimer != null) {
-            heartTimer.cancel();
-        }
+        stopTimer();
         heartTimer = new Timer("bot-heart-0");
         heartTimer.schedule(new TimerTask() {
             @Override
@@ -48,7 +46,18 @@ public class Bot {
     }
 
     private void sendHeart() {
-        send(OpCode.HEARTBEAT, s);
+        try {
+            send(OpCode.HEARTBEAT, s);
+        } catch (Exception e) {
+            stopTimer();
+            managerRestart(true);
+        }
+    }
+
+    private void stopTimer() {
+        if (heartTimer != null) {
+            heartTimer.cancel();
+        }
     }
 
     public void sendIdentify() {
@@ -72,11 +81,17 @@ public class Bot {
         send(OpCode.RESUME, payload);
     }
 
+    public void managerRestart(boolean reconnect) {
+        manager.stop();
+        setReconnect(reconnect);
+        manager.start();
+    }
+
     public void send(int op, Object d) {
         JSONObject payload = new JSONObject();
         payload.put("op", op);
         payload.put("d", d);
-        log.info("=====> {}", payload.toJSONString());
+        log.debug("=====> {}", payload.toJSONString());
         try {
             session.sendMessage(new TextMessage(JSON.toJSONBytes(payload)));
         } catch (IOException e) {

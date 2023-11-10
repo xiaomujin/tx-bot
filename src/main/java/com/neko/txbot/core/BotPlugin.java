@@ -1,0 +1,34 @@
+package com.neko.txbot.core;
+
+import com.neko.txbot.dto.event.message.MessageEvent;
+import org.springframework.stereotype.Component;
+
+/**
+ * <p>BotPlugin class.</p>
+ */
+@Component
+public class BotPlugin {
+
+    /**
+     * 向下执行
+     */
+    public static final int MESSAGE_IGNORE = 0;
+
+    /**
+     * 不向下执行
+     */
+    public static final int MESSAGE_BLOCK = 1;
+
+    /**
+     * 收到频道群聊消息
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link MessageEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onGuildChannelMessage(Bot bot, MessageEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
+
+}

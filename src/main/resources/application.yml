@@ -5,3 +5,7 @@ bot:
 
 server:
   port: 8210
+
+logging:
+  level:
+    com.neko.txbot: debug
