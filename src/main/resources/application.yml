@@ -5,7 +5,8 @@ bot:
 
 server:
   port: 8210
-
-logging:
-  level:
-    com.neko.txbot: debug
+spring:
+  main:
+    banner-mode: log
+  application:
+    name: @project.artifactId@
