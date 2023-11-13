@@ -1,14 +1,11 @@
 package com.neko.txbot.dto.event.message;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.neko.txbot.dto.event.Event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.ArrayList;
 
 
 @Data
@@ -16,29 +13,16 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
-public class ReadyEvent extends Event {
-    /**
-     * 消息id
-     */
-    @JSONField(name = "version")
-    private Long version;
-
+public class ChannelMessageEvent extends MessageEvent {
     /**
      * 子频道 ID
      */
-    @JSONField(name = "session_id")
-    private String sessionId;
+    @JSONField(name = "channel_id")
+    private String channelId;
 
     /**
      * 频道 ID
      */
-    @JSONField(name = "user")
-    private User user;
-
-    /**
-     * 消息内容
-     */
-    @JSONField(name = "shard")
-    private ArrayList<Integer> shard;
-
+    @JSONField(name = "guild_id")
+    private String guildId;
 }

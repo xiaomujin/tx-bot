@@ -136,8 +136,11 @@ public class Bot {
     }
 
     public String sendChannelMsg(String channelId, String atMsgId, String content) {
+        return sendChannelMsg(channelId, atMsgId, content, null);
+    }
+
+    public String sendChannelMsg(String channelId, String atMsgId, String content, String imgUrl) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("content", content);
         if (StringUtils.hasText(atMsgId)) {
             jsonObject.put("msg_id", atMsgId);
             JSONObject messageReference = new JSONObject();
@@ -145,6 +148,10 @@ public class Bot {
             messageReference.put("message_id", atMsgId);
             messageReference.put("ignore_get_message_error", true);
         }
+        if (StringUtils.hasText(imgUrl)) {
+            jsonObject.put("image", imgUrl);
+        }
+        jsonObject.put("content", content);
         String url = TxApi.TEXT_SUB_CHANNEL.replace("{channel_id}", channelId);
         return httpPost(url, jsonObject);
     }
