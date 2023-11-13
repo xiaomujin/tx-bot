@@ -62,7 +62,7 @@ public class Bot {
     public void sendIdentify() {
         JSONObject payload = new JSONObject();
         payload.put("token", getToken());
-        payload.put("intents", 1 << 30 | 1 << 18 | 1 << 12 | 1 << 10 | 1 << 1 | 1 << 0);
+        payload.put("intents", 1 << 30 | 1 << 18 | 1 << 12 | 1 << 10 | 1 << 1 | 1);
         payload.put("shard", List.of(0, 1));
         JSONObject properties = new JSONObject();
         payload.put("properties", properties);
