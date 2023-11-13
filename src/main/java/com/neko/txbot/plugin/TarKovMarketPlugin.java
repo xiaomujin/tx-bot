@@ -35,12 +35,12 @@ public class TarKovMarketPlugin extends BotPlugin {
                     msg.text("名称：").text(it.getCnName() + "\n");
                     msg.text("占格：").text(it.getSize() + "\n");
                     msg.text("基础价格：").text(it.getBasePrice() + it.getTraderPriceCur() + "\n");
-                    msg.text(it.getTraderName()).text(":").text(it.getTraderPrice() + it.getTraderPriceCur() + "\n");
+                    msg.text(it.getTraderName()).text("：").text(it.getTraderPrice() + it.getTraderPriceCur() + "\n");
                     if (it.isCanSellOnFlea()) {
                         msg.text("跳蚤日价：").text(it.getAvgDayPrice() + it.getTraderPriceCur() + "\n");
                         msg.text("跳蚤周价：").text(it.getAvgWeekPrice() + it.getTraderPriceCur());
                     } else {
-                        msg.text("跳蚤禁售");
+                        msg.text("跳蚤禁售!");
                     }
 //                    bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), it.getEnImg());
                     bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build());
