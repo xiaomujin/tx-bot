@@ -3,6 +3,7 @@ package com.neko.txbot.core;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
+import com.neko.txbot.dto.event.message.MessageReference;
 import com.neko.txbot.menu.OpCode;
 import com.neko.txbot.menu.TxApi;
 import com.neko.txbot.util.OkHttpUtil;
@@ -143,10 +144,8 @@ public class Bot {
         JSONObject jsonObject = new JSONObject();
         if (StringUtils.hasText(atMsgId)) {
             jsonObject.put("msg_id", atMsgId);
-            JSONObject messageReference = new JSONObject();
+            MessageReference messageReference = new MessageReference(atMsgId, true);
             jsonObject.put("message_reference", messageReference);
-            messageReference.put("message_id", atMsgId);
-            messageReference.put("ignore_get_message_error", true);
         }
         if (StringUtils.hasText(imgUrl)) {
             jsonObject.put("image", imgUrl);
