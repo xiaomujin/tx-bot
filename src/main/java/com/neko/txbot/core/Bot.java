@@ -118,14 +118,6 @@ public class Bot {
                 .build();
     }
 
-    private Headers getHeaders1() {
-        return new Headers.Builder()
-//                .add("Authorization", "QQBot " + botConfig.getAccessToken())
-                .add("Authorization", "Bot " + botConfig.getAppId() + "." + botConfig.getClientToken())
-                .add("X-Union-Appid", botConfig.getAppId())
-                .build();
-    }
-
     public String httpGet(String url) {
         OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
         return OkHttpUtil.get(okHttpClient, url, getHeaders());
@@ -133,7 +125,7 @@ public class Bot {
 
     public String httpPost(String url, JSONObject bodyJson) {
         OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
-        return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders1());
+        return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders());
     }
 
     public String sendChannelMsg(String channelId, String atMsgId, String content) {
@@ -151,7 +143,7 @@ public class Bot {
             jsonObject.put("image", imgUrl);
         }
         jsonObject.put("content", content);
-        String url = TxApi.TEXT_SUB_CHANNEL.replace("{channel_id}", channelId);
+        String url = TxApi.SEND_CHANNEL.replace("{channel_id}", channelId);
         return httpPost(url, jsonObject);
     }
 }
