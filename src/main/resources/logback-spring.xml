@@ -68,8 +68,8 @@
     <!--        <appender-ref ref="info_log" />-->
     <!--    </logger>-->
 
-    <logger name="com.neko.txbot" level="DEBUG" />
-<!--    <logger name="com.kuroneko.cqbot.mapper" level="DEBUG" />-->
+<!--    <logger name="com.neko.txbot" level="DEBUG" />-->
+<!--    <logger name="com.neko.txbot.mapper" level="DEBUG" />-->
 <!--    <logger name="org.springframework.web" level="DEBUG" />-->
 
 
