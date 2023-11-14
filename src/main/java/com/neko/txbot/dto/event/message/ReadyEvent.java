@@ -30,7 +30,7 @@ public class ReadyEvent extends Event {
     private String sessionId;
 
     /**
-     * 频道 ID
+     * bot用户信息
      */
     @JSONField(name = "user")
     private User user;

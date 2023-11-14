@@ -23,7 +23,7 @@ public class BotPlugin {
      * 收到频道群聊消息
      *
      * @param bot   {@link Bot}
-     * @param event {@link MessageEvent}
+     * @param event {@link ChannelMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
@@ -34,7 +34,7 @@ public class BotPlugin {
      * 收到群聊消息
      *
      * @param bot   {@link Bot}
-     * @param event {@link MessageEvent}
+     * @param event {@link GroupMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {

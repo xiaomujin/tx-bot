@@ -46,6 +46,7 @@ public class BotAsyncTask {
                     }
                 }
             }
+            default -> log.warn("未知的事件类型: {} : {}", txPayload.getT(), txPayload);
         }
     }
 }

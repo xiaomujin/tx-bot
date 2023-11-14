@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
 import com.neko.txbot.dto.event.message.MessageReference;
+import com.neko.txbot.menu.Intent;
 import com.neko.txbot.menu.OpCode;
 import com.neko.txbot.menu.TxApi;
 import com.neko.txbot.util.OkHttpUtil;
@@ -63,7 +64,8 @@ public class Bot {
     public void sendIdentify() {
         JSONObject payload = new JSONObject();
         payload.put("token", getToken());
-        payload.put("intents", 1 << 30 | 1 << 18 | 1 << 12 | 1 << 10 | 1 << 1 | 1);
+        long intents = Intent.calcList(botConfig.getIntents());
+        payload.put("intents", intents);
         payload.put("shard", List.of(0, 1));
         JSONObject properties = new JSONObject();
         payload.put("properties", properties);
@@ -84,6 +86,11 @@ public class Bot {
     public void managerRestart(boolean reconnect) {
         manager.stop();
         setReconnect(reconnect);
+        try {
+            Thread.sleep(2500L);
+        } catch (InterruptedException e) {
+            log.error("sleep error", e);
+        }
         manager.start();
     }
 

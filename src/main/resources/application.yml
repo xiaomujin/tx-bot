@@ -2,6 +2,16 @@ bot:
   appId: 102072130
   clientToken: Lj0PWZAMztCEwr0UGk2jiJsxyY0Ctvhx
   clientSecret: suswwzxutwv02AEM
+  intents:
+    - GUILDS
+    - GUILD_MEMBERS
+    - GUILD_MESSAGE_REACTIONS
+    - DIRECT_MESSAGE
+#    - GROUP
+    - INTERACTION
+    - MESSAGE_AUDIT
+    - AUDIO_ACTION
+    - PUBLIC_GUILD_MESSAGES
 
 server:
   port: 8210
