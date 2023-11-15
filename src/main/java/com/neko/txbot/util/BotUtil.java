@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class MsgUtil {
+public class BotUtil {
 
     public static Optional<String> getOneParam(String cmd, String msg) {
         List<String> params = getParams(cmd, msg, 1);

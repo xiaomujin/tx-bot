@@ -4,10 +4,9 @@ import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
-import com.neko.txbot.dto.event.message.MessageEvent;
 import com.neko.txbot.model.TarKovMarketVo;
 import com.neko.txbot.service.TarKovMarketService;
-import com.neko.txbot.util.MsgUtil;
+import com.neko.txbot.util.BotUtil;
 import com.neko.txbot.util.MsgUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class TarKovMarketPlugin extends BotPlugin {
 
     private ArrayList<MsgUtils> getMsg(String content) {
         ArrayList<MsgUtils> msgList = new ArrayList<>();
-        Optional<String> oneParam = MsgUtil.getOneParam(CMD, content);
+        Optional<String> oneParam = BotUtil.getOneParam(CMD, content);
         Optional<List<TarKovMarketVo>> list = oneParam.flatMap(tarKovMarketService::search);
         list.ifPresent(tarKovMarketVos -> {
             tarKovMarketVos.forEach(it -> {
