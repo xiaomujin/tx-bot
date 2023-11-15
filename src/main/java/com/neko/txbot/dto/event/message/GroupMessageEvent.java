@@ -19,4 +19,9 @@ public class GroupMessageEvent extends MessageEvent {
      */
     @JSONField(name = "group_id")
     private String groupId;
+    /**
+     * 群聊的 openid
+     */
+    @JSONField(name = "group_openid")
+    private String groupOpenid;
 }

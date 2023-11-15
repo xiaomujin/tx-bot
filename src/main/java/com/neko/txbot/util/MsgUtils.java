@@ -1,11 +1,18 @@
 package com.neko.txbot.util;
 
+import lombok.Getter;
+
 /**
  * 消息构建工具
  */
 public class MsgUtils {
 
     private final StringBuilder builder = new StringBuilder();
+    @Getter
+    private String url = "";
+
+    @Getter
+    private boolean isImg = false;
 
     /**
      * 消息构建
@@ -24,6 +31,18 @@ public class MsgUtils {
      */
     public MsgUtils text(String text) {
         builder.append(text);
+        return this;
+    }
+
+    /**
+     * 文本内容
+     *
+     * @param url 链接地址
+     * @return {@link MsgUtils}
+     */
+    public MsgUtils img(String url) {
+        this.url = url;
+        this.isImg = true;
         return this;
     }
 

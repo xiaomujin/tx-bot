@@ -19,6 +19,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 
 @Component
@@ -151,6 +152,29 @@ public class Bot {
         }
         jsonObject.put("content", content);
         String url = TxApi.SEND_CHANNEL.replace("{channel_id}", channelId);
+        return httpPost(url, jsonObject);
+    }
+
+
+    public String sendGroupMsg(String groupOpenid, String atMsgId, String content, Integer msgSeq) {
+        JSONObject jsonObject = new JSONObject();
+        if (StringUtils.hasText(atMsgId)) {
+            jsonObject.put("msg_id", atMsgId);
+        }
+        jsonObject.put("content", content);
+        jsonObject.put("msg_type", 0);
+        jsonObject.put("msg_seq", msgSeq);
+        jsonObject.put("timestamp", Instant.now().getEpochSecond());
+        String url = TxApi.SEND_GROUP.replace("{group_openid}", groupOpenid);
+        return httpPost(url, jsonObject);
+    }
+
+    public String sendGroupMsgImg(String groupOpenid, String imgUrl) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("file_type", 1);
+        jsonObject.put("url", imgUrl);
+        jsonObject.put("srv_send_msg", true);
+        String url = TxApi.SEND_GROUP_FILE.replace("{group_openid}", groupOpenid);
         return httpPost(url, jsonObject);
     }
 }

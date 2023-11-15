@@ -17,6 +17,11 @@ public class User {
     @JSONField(name = "id")
     private String id;
     /**
+     * 用户 openid
+     */
+    @JSONField(name = "member_openid")
+    private String memberOpenid;
+    /**
      * 用户名
      */
     @JSONField(name = "username")
