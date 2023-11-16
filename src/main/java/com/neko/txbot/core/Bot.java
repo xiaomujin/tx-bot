@@ -169,6 +169,10 @@ public class Bot {
         return httpPost(url, jsonObject);
     }
 
+    public String sendGroupMsg(String groupOpenid, String atMsgId, String content) {
+        return sendGroupMsg(groupOpenid, atMsgId, content, 0);
+    }
+
     public String sendGroupMsgImg(String groupOpenid, String imgUrl) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("file_type", 1);
