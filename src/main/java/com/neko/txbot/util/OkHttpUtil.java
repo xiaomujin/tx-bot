@@ -46,6 +46,18 @@ public class OkHttpUtil {
         return responseData;
     }
 
+    /**
+     * get请求
+     */
+    public static String getRedirectUrl(OkHttpClient okHttpClient, String url, Headers headers) {
+        log.info("okHttpClient get url:{}.", url);
+        Request request = new Request.Builder().url(url).headers(headers).get().build();
+
+        String responseData = requestRedirectUrl(okHttpClient, url, request);
+        log.info("okHttpClient get url:{}, request responseData====> {}", url, responseData);
+        return responseData;
+    }
+
     public static String get(OkHttpClient okHttpClient, String url) {
         Headers headers = new Headers.Builder().build();
         return get(okHttpClient, url, headers);
@@ -58,6 +70,15 @@ public class OkHttpUtil {
         OkHttpClient okHttpClient = getOkHttpClient();
         Headers headers = new Headers.Builder().build();
         return get(okHttpClient, url, headers);
+    }
+
+    /**
+     * GET请求。使用默认的 okHttpClient 和 headers
+     */
+    public static String getRedirectUrl(String url) {
+        OkHttpClient okHttpClient = getOkHttpClient();
+        Headers headers = new Headers.Builder().build();
+        return getRedirectUrl(okHttpClient, url, headers);
     }
 
     /**
@@ -104,6 +125,18 @@ public class OkHttpUtil {
         }
 
         return responseData;
+    }
+
+    /**
+     * 获取响应结果
+     */
+    public static String requestRedirectUrl(OkHttpClient okHttpClient, String url, Request request) {
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            return response.request().url().toString();
+        } catch (Exception e) {
+            log.error("okHttpClient getRedirectUrl error.url:{}", url, e);
+        }
+        return "";
     }
 
     /**

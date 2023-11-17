@@ -70,7 +70,23 @@ public class DailyPlugin extends BotPlugin {
 
     private MsgUtils getCmdMsg() {
         MsgUtils msgUtils = MsgUtils.builder();
-        msgUtils.img("https://api.vvhan.com/api/moyu");
+        // 缓存里加载
+        String url = expiringMap.get(CMD);
+        if (StringUtils.hasText(url)) {
+            msgUtils.img(url);
+            return msgUtils;
+        }
+        // 网络请求
+        String string = OkHttpUtil.get("https://api.j4u.ink/v1/store/other/proxy/remote/moyu.json");
+        JSONObject jsonObject = JSON.parseObject(string);
+        if (jsonObject.getIntValue("code") != 200) {
+            msgUtils.text("日报获取失败！");
+            return msgUtils;
+        }
+        String imgUrl = jsonObject.getJSONObject("data").getString("moyu_url");
+        String fImgUrl = OkHttpUtil.getRedirectUrl(imgUrl);
+        expiringMap.put(CMD, fImgUrl);
+        msgUtils.img(fImgUrl);
         return msgUtils;
     }
 
