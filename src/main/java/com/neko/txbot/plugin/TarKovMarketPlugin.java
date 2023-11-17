@@ -29,7 +29,7 @@ public class TarKovMarketPlugin extends BotPlugin {
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             ArrayList<MsgUtils> msg = getMsg(event.getNoAtContent());
-            msg.forEach(it -> bot.sendChannelMsg(event.getChannelId(), event.getId(), it.build(), it.getUrl()));
+            msg.forEach(it -> bot.sendChannelMsg(event.getChannelId(), event.getId(), it.build(), it.buildImg(true)));
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;

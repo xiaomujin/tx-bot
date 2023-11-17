@@ -1,6 +1,7 @@
 package com.neko.txbot.util;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 消息构建工具
@@ -13,6 +14,7 @@ public class MsgUtils {
 
     @Getter
     private boolean isImg = false;
+    public static final String PROXY_IMG_URL = "https://i3.wp.com/";
 
     /**
      * 消息构建
@@ -53,6 +55,22 @@ public class MsgUtils {
      */
     public String build() {
         return builder.toString();
+    }
+
+    /**
+     * 构建消息链
+     *
+     * @return {@link String}
+     */
+    public String buildImg(boolean proxy) {
+        if (isImg) {
+            if (proxy) {
+                url = url.replaceFirst("^https?://", "");
+                url = PROXY_IMG_URL + url;
+            }
+            return url;
+        }
+        return "";
     }
 
 }
