@@ -40,7 +40,7 @@ public class DailyPlugin extends BotPlugin {
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             MsgUtils msg = getCmdMsg();
-            bot.sendChannelMsg(event.getChannelId(), event.getId(), "", msg.getUrl());
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.getUrl());
             return MESSAGE_BLOCK;
         } else if (event.getNoAtContent().startsWith(CMD2)) {
             MsgUtils msg = getCmd2Msg();
