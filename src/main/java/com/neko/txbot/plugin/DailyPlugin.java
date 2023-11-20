@@ -6,6 +6,7 @@ import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
+import com.neko.txbot.exception.ExceptionHandler;
 import com.neko.txbot.util.MsgUtils;
 import com.neko.txbot.util.OkHttpUtil;
 import lombok.RequiredArgsConstructor;

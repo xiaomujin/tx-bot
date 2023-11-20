@@ -4,6 +4,8 @@ import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
 import com.neko.txbot.dto.event.message.*;
+import com.neko.txbot.exception.ExceptionHandler;
+import com.neko.txbot.menu.EventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -28,9 +30,9 @@ public class BotAsyncTask {
                 ChannelMessageEvent messageEvent = txPayload.getD().to(ChannelMessageEvent.class);
                 String content = messageEvent.getContent();
                 messageEvent.setNoAtContent(content.replaceAll("<@!.*?>", "").trim());
-                messageEvent.setEventType("CHANNEL");
+                messageEvent.setEventType(EventType.CHANNEL);
                 for (BotPlugin botPlugin : bot.getBotPlugins()) {
-                    if (botPlugin.onChannelMessage(bot, messageEvent) == BotPlugin.MESSAGE_BLOCK) {
+                    if (ExceptionHandler.with(bot, messageEvent, () -> botPlugin.onChannelMessage(bot, messageEvent)) == BotPlugin.MESSAGE_BLOCK) {
                         break;
                     }
                 }
@@ -39,16 +41,16 @@ public class BotAsyncTask {
                 GroupMessageEvent messageEvent = txPayload.getD().to(GroupMessageEvent.class);
                 String content = messageEvent.getContent();
                 messageEvent.setNoAtContent(content.replaceAll("<@!.*?>", "").trim());
-                messageEvent.setEventType("GROUP");
+                messageEvent.setEventType(EventType.GROUP);
                 for (BotPlugin botPlugin : bot.getBotPlugins()) {
-                    if (botPlugin.onGroupMessage(bot, messageEvent) == BotPlugin.MESSAGE_BLOCK) {
+                    if (ExceptionHandler.with(bot, messageEvent, () -> botPlugin.onGroupMessage(bot, messageEvent)) == BotPlugin.MESSAGE_BLOCK) {
                         break;
                     }
                 }
             }
             case "GUILD_MEMBER_ADD" -> {
                 GuildMemberAddEvent messageEvent = txPayload.getD().to(GuildMemberAddEvent.class);
-                messageEvent.setEventType("GROUP");
+                messageEvent.setEventType(EventType.GROUP);
                 for (BotPlugin botPlugin : bot.getBotPlugins()) {
                     if (botPlugin.onGuildMemberAdd(bot, messageEvent) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -57,7 +59,7 @@ public class BotAsyncTask {
             }
             case "GUILD_MEMBER_REMOVE" -> {
                 GuildMemberRemoveEvent messageEvent = txPayload.getD().to(GuildMemberRemoveEvent.class);
-                messageEvent.setEventType("GROUP");
+                messageEvent.setEventType(EventType.GROUP);
                 for (BotPlugin botPlugin : bot.getBotPlugins()) {
                     if (botPlugin.onGuildMemberRemove(bot, messageEvent) == BotPlugin.MESSAGE_BLOCK) {
                         break;
