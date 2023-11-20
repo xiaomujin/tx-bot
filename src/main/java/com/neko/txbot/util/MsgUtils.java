@@ -14,7 +14,7 @@ public class MsgUtils {
 
     @Getter
     private boolean isImg = false;
-    public static final String PROXY_IMG_URL = "https://i3.wp.com/";
+    public static final String PROXY_IMG_URL = "https://t0t.co/proxy/";
 
     /**
      * 消息构建
