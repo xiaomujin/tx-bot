@@ -2,10 +2,9 @@ package com.neko.txbot.menu;
 
 import lombok.Getter;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
+@Getter
 public enum Intent {
     GUILDS(0),
     GUILD_MEMBERS(1),
@@ -27,7 +26,6 @@ public enum Intent {
 
     ;
 
-    @Getter
     private final int pos;
 
     Intent(int pos) {
@@ -42,7 +40,7 @@ public enum Intent {
     }
 
     public static long calcOne(Intent intent) {
-        return 1 << intent.pos;
+        return 1L << intent.pos;
     }
 
 }
