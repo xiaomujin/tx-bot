@@ -1,6 +1,7 @@
 package com.neko.txbot.exception;
 
 import com.neko.txbot.core.Bot;
+import com.neko.txbot.core.BotPlugin;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
 import com.neko.txbot.dto.event.message.MessageEvent;
@@ -11,12 +12,9 @@ import java.util.function.Supplier;
 
 @Slf4j
 public class ExceptionHandler {
-    public static void with(Bot bot, MessageEvent event, Supplier<String> block) {
+    public static int with(Bot bot, MessageEvent event, Supplier<Integer> block) {
         try {
-            String msg = block.get();
-            if (StringUtils.hasText(msg)) {
-                push(event, bot, msg);
-            }
+            return block.get();
         } catch (BotException e) {
             if (StringUtils.hasText(e.getMessage())) {
                 push(event, bot, e.getMessage());
@@ -25,6 +23,7 @@ public class ExceptionHandler {
             push(event, bot, "ERROR: " + e.getMessage());
             log.error(e.getMessage(), e);
         }
+        return BotPlugin.MESSAGE_IGNORE;
     }
 
     private static void push(MessageEvent event, Bot bot, String message) {
