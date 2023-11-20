@@ -1,7 +1,6 @@
 package com.neko.txbot.util;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 消息构建工具
