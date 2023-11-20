@@ -2,10 +2,7 @@ package com.neko.txbot.plugin;
 
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
-import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
-import com.neko.txbot.model.TarKovMarketVo;
-import com.neko.txbot.service.TarKovMarketService;
 import com.neko.txbot.util.BotUtil;
 import com.neko.txbot.util.MsgUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +11,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Order(1)
