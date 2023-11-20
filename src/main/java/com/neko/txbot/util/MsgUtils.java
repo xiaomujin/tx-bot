@@ -73,5 +73,14 @@ public class MsgUtils {
         return "";
     }
 
+    /**
+     * 构建消息链
+     *
+     * @return {@link String}
+     */
+    public String buildImg() {
+        return buildImg(false);
+    }
+
 }
 

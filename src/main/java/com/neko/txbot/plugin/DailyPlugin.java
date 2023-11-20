@@ -33,18 +33,18 @@ public class DailyPlugin extends BotPlugin {
 //            2）ExpirationPolicy.CREATED：在过期时间内重新 put 值的话，过期时间重新计算；
             .expirationPolicy(ExpirationPolicy.CREATED)
             //设置每个key有效时间30m,如果key不设置过期时间，key永久有效
-            .expiration(30L, TimeUnit.MINUTES)
+            .expiration(60L, TimeUnit.MINUTES)
             .build();
 
     @Override
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             MsgUtils msg = getCmdMsg();
-            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.buildImg(true));
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.buildImg());
             return MESSAGE_BLOCK;
         } else if (event.getNoAtContent().startsWith(CMD2)) {
             MsgUtils msg = getCmd2Msg();
-            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.buildImg(true));
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.buildImg());
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
