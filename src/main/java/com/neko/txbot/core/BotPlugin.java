@@ -1,8 +1,6 @@
 package com.neko.txbot.core;
 
-import com.neko.txbot.dto.event.message.ChannelMessageEvent;
-import com.neko.txbot.dto.event.message.GroupMessageEvent;
-import com.neko.txbot.dto.event.message.MessageEvent;
+import com.neko.txbot.dto.event.message.*;
 
 /**
  * <p>BotPlugin class.</p>
@@ -38,6 +36,28 @@ public class BotPlugin {
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
+    /**
+     * 用户加入频道
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GuildMemberAddEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onGuildMemberAdd(Bot bot, GuildMemberAddEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
+    /**
+     * 用户退出频道
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GuildMemberRemoveEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onGuildMemberRemove(Bot bot, GuildMemberRemoveEvent event) {
         return MESSAGE_IGNORE;
     }
 

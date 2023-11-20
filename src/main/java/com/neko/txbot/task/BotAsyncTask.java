@@ -46,6 +46,24 @@ public class BotAsyncTask {
                     }
                 }
             }
+            case "GUILD_MEMBER_ADD" -> {
+                GuildMemberAddEvent messageEvent = txPayload.getD().to(GuildMemberAddEvent.class);
+                messageEvent.setEventType("GROUP");
+                for (BotPlugin botPlugin : bot.getBotPlugins()) {
+                    if (botPlugin.onGuildMemberAdd(bot, messageEvent) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+            }
+            case "GUILD_MEMBER_REMOVE" -> {
+                GuildMemberRemoveEvent messageEvent = txPayload.getD().to(GuildMemberRemoveEvent.class);
+                messageEvent.setEventType("GROUP");
+                for (BotPlugin botPlugin : bot.getBotPlugins()) {
+                    if (botPlugin.onGuildMemberRemove(bot, messageEvent) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+            }
             default -> log.warn("未知的事件类型: {} : {}", txPayload.getT(), txPayload);
         }
     }
