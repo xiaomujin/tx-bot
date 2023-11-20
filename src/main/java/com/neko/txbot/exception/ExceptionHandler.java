@@ -20,7 +20,7 @@ public class ExceptionHandler {
                 push(event, bot, e.getMessage());
             }
         } catch (Exception e) {
-            push(event, bot, "ERROR: " + e.getMessage());
+            push(event, bot, "电波无法到达~ 再试试吧");
             log.error(e.getMessage(), e);
         }
         return BotPlugin.MESSAGE_IGNORE;

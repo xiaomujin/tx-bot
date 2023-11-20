@@ -102,7 +102,7 @@ public class DailyPlugin extends BotPlugin {
         // 网络请求
         String string = OkHttpUtil.get("https://v2.alapi.cn/api/zaobao?format=json&token=eCKR3lL7uFtt9PIm");
         JSONObject jsonObject = JSON.parseObject(string);
-        if (jsonObject.getIntValue("code") != 200) {
+        if (jsonObject == null || jsonObject.getIntValue("code") != 200) {
             msgUtils.text("日报获取失败！");
             return msgUtils;
         }
