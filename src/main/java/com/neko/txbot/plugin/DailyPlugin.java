@@ -55,12 +55,12 @@ public class DailyPlugin extends BotPlugin {
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             MsgUtils msg = getCmdMsg();
-            bot.sendGroupMsgImg(event.getGroupId(), msg.buildImg(), event.getId(), 1);
+            bot.sendGroupMsgImg(event.getGroupId(), event.getId(), msg.buildImg());
             return MESSAGE_BLOCK;
         } else if (event.getNoAtContent().startsWith(CMD2)) {
             MsgUtils msgUtils = getCmd2Msg();
             if (msgUtils.isImg()) {
-                bot.sendGroupMsgImg(event.getGroupId(), msgUtils.getUrl(), event.getId(), 1);
+                bot.sendGroupMsgImg(event.getGroupId(), event.getId(), msgUtils.getUrl());
                 return MESSAGE_BLOCK;
             }
             bot.sendGroupMsg(event.getGroupId(), event.getId(), msgUtils.build());

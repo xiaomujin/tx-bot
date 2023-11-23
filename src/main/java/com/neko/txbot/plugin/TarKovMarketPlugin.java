@@ -42,10 +42,10 @@ public class TarKovMarketPlugin extends BotPlugin {
             for (int i = 0; i < msg.size(); i++) {
                 MsgUtils msgUtils = msg.get(i);
                 if (msgUtils.isImg()) {
-                    bot.sendGroupMsgImg(event.getGroupId(), msgUtils.getUrl(), event.getId(), i);
+                    bot.sendGroupMsgImg(event.getGroupId(), event.getId(), msgUtils.getUrl());
                     continue;
                 }
-                bot.sendGroupMsg(event.getGroupId(), event.getId(), msgUtils.build(), i);
+                bot.sendGroupMsg(event.getGroupId(), event.getId(), msgUtils.build());
             }
             return MESSAGE_BLOCK;
         }

@@ -36,6 +36,9 @@ public class Bot {
     private String userId;
     private boolean isReconnect = false;
 
+    private ThreadLocal<String> groupMsgId = new ThreadLocal<>();
+    private ThreadLocal<Long> groupMsgSeq = new ThreadLocal<>();
+
     public void startHeart(int time) {
         stopTimer();
         heartTimer = new Timer("bot-heart-0");
@@ -155,34 +158,46 @@ public class Bot {
         return httpPost(url, jsonObject);
     }
 
+    private Long getMsgSeq(String msgId) {
+        String localMsgId = groupMsgId.get();
+        if (msgId.equals(localMsgId)) {
+            Long msgSeq = groupMsgSeq.get();
+            if (msgSeq == null) {
+                msgSeq = 0L;
+            }
+            groupMsgSeq.set(++msgSeq);
+            return msgSeq;
+        } else {
+            groupMsgSeq.set(0L);
+            groupMsgId.set(msgId);
+            return 0L;
+        }
+    }
 
-    public String sendGroupMsg(String groupOpenid, String atMsgId, String content, Integer msgSeq) {
+
+    public String sendGroupMsg(String groupOpenid, String msgId, String content) {
         JSONObject jsonObject = new JSONObject();
-        if (StringUtils.hasText(atMsgId)) {
-            jsonObject.put("msg_id", atMsgId);
+        if (StringUtils.hasText(msgId)) {
+            jsonObject.put("msg_id", msgId);
         }
         jsonObject.put("content", content);
         jsonObject.put("msg_type", 0);
-        jsonObject.put("msg_seq", msgSeq);
+        jsonObject.put("msg_seq", getMsgSeq(msgId));
         jsonObject.put("timestamp", Instant.now().getEpochSecond());
         String url = TxApi.SEND_GROUP.replace("{group_openid}", groupOpenid);
         return httpPost(url, jsonObject);
     }
 
-    public String sendGroupMsg(String groupOpenid, String atMsgId, String content) {
-        return sendGroupMsg(groupOpenid, atMsgId, content, 0);
-    }
-
-    public String sendGroupMsgImg(String groupOpenid , String imgUrl, String atMsgId, Integer msgSeq) {
+    public String sendGroupMsgImg(String groupOpenid, String msgId, String imgUrl) {
         JSONObject jsonObject = new JSONObject();
-        if (StringUtils.hasText(atMsgId)) {
-            jsonObject.put("msg_id", atMsgId);
+        if (StringUtils.hasText(msgId)) {
+            jsonObject.put("msg_id", msgId);
         }
         JSONObject groupImgInfo = getGroupImgInfo(groupOpenid, imgUrl);
         jsonObject.put("content", " ");
         jsonObject.put("media", groupImgInfo);
         jsonObject.put("msg_type", 7);
-        jsonObject.put("msg_seq", msgSeq);
+        jsonObject.put("msg_seq", getMsgSeq(msgId));
         jsonObject.put("timestamp", Instant.now().getEpochSecond());
         String url = TxApi.SEND_GROUP.replace("{group_openid}", groupOpenid);
         return httpPost(url, jsonObject);

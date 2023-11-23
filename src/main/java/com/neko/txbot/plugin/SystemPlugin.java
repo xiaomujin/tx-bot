@@ -27,7 +27,7 @@ public class SystemPlugin extends BotPlugin {
             oneParam.filter(it -> it.equals("114514")).ifPresent(it -> {
                 MsgUtils msg = MsgUtils.builder();
                 msg.text("开始更新，预计需要3分钟！");
-                bot.sendGroupMsg(event.getGroupId(), event.getId(), msg.build(), 1);
+                bot.sendGroupMsg(event.getGroupId(), event.getId(), msg.build());
                 ProcessBuilder pb = new ProcessBuilder("sh", "/mnt/tx-qqbot/release.sh");
                 pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
@@ -35,7 +35,7 @@ public class SystemPlugin extends BotPlugin {
                 try {
                     pb.start();
                 } catch (IOException e) {
-                    bot.sendGroupMsg(event.getGroupId(), event.getId(), MsgUtils.builder().text(e.getMessage()).build(), 2);
+                    bot.sendGroupMsg(event.getGroupId(), event.getId(), MsgUtils.builder().text(e.getMessage()).build());
                     log.error("重启失败", e);
                 }
             });
