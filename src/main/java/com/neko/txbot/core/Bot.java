@@ -173,12 +173,28 @@ public class Bot {
         return sendGroupMsg(groupOpenid, atMsgId, content, 0);
     }
 
-    public String sendGroupMsgImg(String groupOpenid, String imgUrl) {
+    public String sendGroupMsgImg(String groupOpenid , String imgUrl, String atMsgId, Integer msgSeq) {
+        JSONObject jsonObject = new JSONObject();
+        if (StringUtils.hasText(atMsgId)) {
+            jsonObject.put("msg_id", atMsgId);
+        }
+        JSONObject groupImgInfo = getGroupImgInfo(groupOpenid, imgUrl);
+        jsonObject.put("content", " ");
+        jsonObject.put("media", groupImgInfo);
+        jsonObject.put("msg_type", 7);
+        jsonObject.put("msg_seq", msgSeq);
+        jsonObject.put("timestamp", Instant.now().getEpochSecond());
+        String url = TxApi.SEND_GROUP.replace("{group_openid}", groupOpenid);
+        return httpPost(url, jsonObject);
+    }
+
+    private JSONObject getGroupImgInfo(String groupOpenid, String imgUrl) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("file_type", 1);
         jsonObject.put("url", imgUrl);
-        jsonObject.put("srv_send_msg", true);
+        jsonObject.put("srv_send_msg", false);
         String url = TxApi.SEND_GROUP_FILE.replace("{group_openid}", groupOpenid);
-        return httpPost(url, jsonObject);
+        String res = httpPost(url, jsonObject);
+        return JSON.parseObject(res);
     }
 }
