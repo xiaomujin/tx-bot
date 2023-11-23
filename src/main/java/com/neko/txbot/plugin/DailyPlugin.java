@@ -55,7 +55,7 @@ public class DailyPlugin extends BotPlugin {
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             MsgUtils msg = getCmdMsg();
-            bot.sendGroupMsgImg(event.getGroupId(), msg.getUrl(), event.getId(), 1);
+            bot.sendGroupMsgImg(event.getGroupId(), msg.buildImg(), event.getId(), 1);
             return MESSAGE_BLOCK;
         } else if (event.getNoAtContent().startsWith(CMD2)) {
             MsgUtils msgUtils = getCmd2Msg();
@@ -70,25 +70,26 @@ public class DailyPlugin extends BotPlugin {
     }
 
     private MsgUtils getCmdMsg() {
-        MsgUtils msgUtils = MsgUtils.builder();
-        // 缓存里加载
-        String url = expiringMap.get(CMD);
-        if (StringUtils.hasText(url)) {
-            msgUtils.img(url);
-            return msgUtils;
-        }
-        // 网络请求
-        String string = OkHttpUtil.get("https://api.j4u.ink/v1/store/other/proxy/remote/moyu.json");
-        JSONObject jsonObject = JSON.parseObject(string);
-        if (jsonObject.getIntValue("code") != 200) {
-            msgUtils.text("日报获取失败！");
-            return msgUtils;
-        }
-        String imgUrl = jsonObject.getJSONObject("data").getString("moyu_url");
-        String fImgUrl = OkHttpUtil.getRedirectUrl(imgUrl);
-        expiringMap.put(CMD, fImgUrl);
-        msgUtils.img(fImgUrl);
-        return msgUtils;
+        return MsgUtils.builder().img("https://api.vvhan.com/api/moyu");
+//        MsgUtils msgUtils = MsgUtils.builder();
+//        // 缓存里加载
+//        String url = expiringMap.get(CMD);
+//        if (StringUtils.hasText(url)) {
+//            msgUtils.img(url);
+//            return msgUtils;
+//        }
+//        // 网络请求
+//        String string = OkHttpUtil.get("https://api.j4u.ink/v1/store/other/proxy/remote/moyu.json");
+//        JSONObject jsonObject = JSON.parseObject(string);
+//        if (jsonObject.getIntValue("code") != 200) {
+//            msgUtils.text("日报获取失败！");
+//            return msgUtils;
+//        }
+//        String imgUrl = jsonObject.getJSONObject("data").getString("moyu_url");
+//        String fImgUrl = OkHttpUtil.getRedirectUrl(imgUrl);
+//        expiringMap.put(CMD, fImgUrl);
+//        msgUtils.img(fImgUrl);
+//        return msgUtils;
     }
 
     private MsgUtils getCmd2Msg() {
