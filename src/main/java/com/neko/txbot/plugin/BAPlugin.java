@@ -11,7 +11,6 @@ import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
 import com.neko.txbot.exception.BotException;
 import com.neko.txbot.model.BaRankInfo;
-import com.neko.txbot.util.MsgUtils;
 import com.neko.txbot.util.OkHttpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

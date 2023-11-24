@@ -5,7 +5,6 @@ import com.neko.txbot.core.BotPlugin;
 import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
 import com.neko.txbot.util.BotUtil;
-import com.neko.txbot.util.MsgUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
