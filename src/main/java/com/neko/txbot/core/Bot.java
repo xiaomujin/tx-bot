@@ -3,6 +3,9 @@ package com.neko.txbot.core;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
+import com.neko.txbot.core.msg.BaseMsg;
+import com.neko.txbot.core.msg.ImgMsg;
+import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.MessageReference;
 import com.neko.txbot.menu.Intent;
 import com.neko.txbot.menu.OpCode;
@@ -174,42 +177,47 @@ public class Bot {
         }
     }
 
-
-    public String sendGroupMsg(String groupOpenid, String msgId, String content) {
+    private JSONObject getGroupFileInfo(String groupOpenid, String imgUrl, int fileType) {
         JSONObject jsonObject = new JSONObject();
-        if (StringUtils.hasText(msgId)) {
-            jsonObject.put("msg_id", msgId);
-        }
-        jsonObject.put("content", content);
-        jsonObject.put("msg_type", 0);
-        jsonObject.put("msg_seq", getMsgSeq(msgId));
-        jsonObject.put("timestamp", Instant.now().getEpochSecond());
-        String url = TxApi.SEND_GROUP.replace("{group_openid}", groupOpenid);
-        return httpPost(url, jsonObject);
-    }
-
-    public String sendGroupMsgImg(String groupOpenid, String msgId, String imgUrl) {
-        JSONObject jsonObject = new JSONObject();
-        if (StringUtils.hasText(msgId)) {
-            jsonObject.put("msg_id", msgId);
-        }
-        JSONObject groupImgInfo = getGroupImgInfo(groupOpenid, imgUrl);
-        jsonObject.put("content", " ");
-        jsonObject.put("media", groupImgInfo);
-        jsonObject.put("msg_type", 7);
-        jsonObject.put("msg_seq", getMsgSeq(msgId));
-        jsonObject.put("timestamp", Instant.now().getEpochSecond());
-        String url = TxApi.SEND_GROUP.replace("{group_openid}", groupOpenid);
-        return httpPost(url, jsonObject);
-    }
-
-    private JSONObject getGroupImgInfo(String groupOpenid, String imgUrl) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("file_type", 1);
+        jsonObject.put("file_type", fileType);
         jsonObject.put("url", imgUrl);
         jsonObject.put("srv_send_msg", false);
         String url = TxApi.SEND_GROUP_FILE.replace("{group_openid}", groupOpenid);
         String res = httpPost(url, jsonObject);
         return JSON.parseObject(res);
+    }
+
+    public String sendGroupMsg(String groupOpenid, String msgId, BaseMsg msg) {
+        JSONObject jsonObject = new JSONObject();
+        if (StringUtils.hasText(msgId)) {
+            jsonObject.put("msg_id", msgId);
+        }
+        jsonObject.put("content", " ");
+        jsonObject.put("msg_seq", getMsgSeq(msgId));
+        jsonObject.put("timestamp", Instant.now().getEpochSecond());
+
+        switch (msg) {
+            case TextMsg it:
+                jsonObject.put("content", it.build());
+                jsonObject.put("msg_type", 0);
+                break;
+            case ImgMsg it:
+                jsonObject.put("msg_type", 7);
+                JSONObject groupImgInfo = getGroupFileInfo(groupOpenid, it.build(), 1);
+                if (groupImgInfo == null) {
+                    log.error("发送群图片，获取图片信息失败");
+                    return "";
+                }
+                jsonObject.put("media", groupImgInfo);
+                break;
+            default:
+                log.error("未知消息类型: {}", msg);
+        }
+        String url = TxApi.SEND_GROUP.replace("{group_openid}", groupOpenid);
+        return httpPost(url, jsonObject);
+    }
+
+    public void sendGroupMsg(String groupOpenid, String msgId, List<BaseMsg> msgList) {
+        msgList.forEach(msg -> sendGroupMsg(groupOpenid, msgId, msg));
     }
 }

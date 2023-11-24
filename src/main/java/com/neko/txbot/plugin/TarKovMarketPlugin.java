@@ -2,6 +2,9 @@ package com.neko.txbot.plugin;
 
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
+import com.neko.txbot.core.msg.BaseMsg;
+import com.neko.txbot.core.msg.ImgMsg;
+import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
 import com.neko.txbot.model.TarKovMarketVo;
@@ -28,8 +31,8 @@ public class TarKovMarketPlugin extends BotPlugin {
     @Override
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
-            ArrayList<MsgUtils> msg = getMsg(event.getNoAtContent());
-            msg.forEach(it -> bot.sendChannelMsg(event.getChannelId(), event.getId(), it.build(), it.buildImg(true)));
+            ArrayList<BaseMsg> msg = getMsg(event.getNoAtContent());
+            msg.forEach(it -> bot.sendChannelMsg(event.getChannelId(), event.getId(), it.build(), it.build()));
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
@@ -38,27 +41,21 @@ public class TarKovMarketPlugin extends BotPlugin {
     @Override
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
-            ArrayList<MsgUtils> msg = getMsg(event.getNoAtContent());
-            for (MsgUtils msgUtils : msg) {
-                if (msgUtils.isImg()) {
-                    bot.sendGroupMsgImg(event.getGroupId(), event.getId(), msgUtils.getUrl());
-                    continue;
-                }
-                bot.sendGroupMsg(event.getGroupId(), event.getId(), msgUtils.build());
-            }
+            ArrayList<BaseMsg> msg = getMsg(event.getNoAtContent());
+            bot.sendGroupMsg(event.getGroupId(), event.getId(), msg);
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
     }
 
-    private ArrayList<MsgUtils> getMsg(String content) {
-        ArrayList<MsgUtils> msgList = new ArrayList<>();
+    private ArrayList<BaseMsg> getMsg(String content) {
+        ArrayList<BaseMsg> msgList = new ArrayList<>();
         Optional<String> oneParam = BotUtil.getOneParam(CMD, content);
         Optional<List<TarKovMarketVo>> list = oneParam.flatMap(tarKovMarketService::search);
         list.ifPresent(tarKovMarketVos -> {
             tarKovMarketVos.forEach(it -> {
-                MsgUtils msg = MsgUtils.builder();
-                MsgUtils img = MsgUtils.builder().img(it.getEnImg());
+                TextMsg msg = TextMsg.builder();
+                ImgMsg img = ImgMsg.builder().img(it.getEnImg());
                 msgList.add(img);
                 msg.text("\n名称：").text(it.getCnName() + "\n");
                 msg.text("24h：").text(it.getChange24() + "%").text("  7d：").text(it.getChange7d() + "%\n");
@@ -76,7 +73,7 @@ public class TarKovMarketPlugin extends BotPlugin {
             });
         });
         if (msgList.isEmpty()) {
-            MsgUtils text = MsgUtils.builder().text("没有找到：").text(oneParam.orElse(""));
+            TextMsg text = TextMsg.builder().text("没有找到：").text(oneParam.orElse(""));
             msgList.add(text);
         }
         return msgList;

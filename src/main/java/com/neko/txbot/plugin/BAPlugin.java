@@ -5,6 +5,8 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
+import com.neko.txbot.core.msg.BaseMsg;
+import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
 import com.neko.txbot.exception.BotException;
@@ -34,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 public class BAPlugin extends BotPlugin {
     private static final String CMD = "/总力战";
 
-    private final ExpiringMap<String, ArrayList<String>> expiringMap = ExpiringMap.builder()
+    private final ExpiringMap<String, ArrayList<BaseMsg>> expiringMap = ExpiringMap.builder()
             //允许更新过期时间值,如果不设置variableExpiration，不允许后面更改过期时间,一旦执行更改过期时间操作会抛异常UnsupportedOperationException
             .variableExpiration()
 //            1）ExpirationPolicy.ACCESSED ：每进行一次访问，过期时间就会重新计算；
@@ -47,8 +49,8 @@ public class BAPlugin extends BotPlugin {
     @Override
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
-            ArrayList<String> msgList = getCmdMsg();
-            msgList.forEach(msg -> bot.sendChannelMsg(event.getChannelId(), event.getId(), msg));
+            ArrayList<BaseMsg> msgList = getCmdMsg();
+            msgList.forEach(msg -> bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build()));
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
@@ -57,15 +59,15 @@ public class BAPlugin extends BotPlugin {
     @Override
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
-            ArrayList<String> msgList = getCmdMsg();
-            msgList.forEach(msg -> bot.sendGroupMsg(event.getGroupId(), event.getId(), msg));
+            ArrayList<BaseMsg> msgList = getCmdMsg();
+            bot.sendGroupMsg(event.getGroupId(), event.getId(), msgList);
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
     }
 
-    private ArrayList<String> getCmdMsg() {
-        ArrayList<String> arrayList = expiringMap.get(CMD);
+    private ArrayList<BaseMsg> getCmdMsg() {
+        ArrayList<BaseMsg> arrayList = expiringMap.get(CMD);
         if (arrayList != null) {
             return arrayList;
         }
@@ -95,8 +97,8 @@ public class BAPlugin extends BotPlugin {
 //            }
 //            JSONObject listByLastRankJO = JSON.parseObject(listByLastRank.getBody());
 //            JSONArray listByLastRankData = listByLastRankJO.getJSONArray("data");
-        ArrayList<String> list = new ArrayList<>();
-        MsgUtils msg = MsgUtils.builder();
+        ArrayList<BaseMsg> list = new ArrayList<>();
+        TextMsg msg = TextMsg.builder();
         String mapName = seasonInfo.getJSONObject("map").getString("value");
         msg.text("\n第").text(season.toString()).text("期 ").text(mapName).text(seasonInfo.getString("boss"));
         msg.text("\n开始：").text(seasonInfo.getString("startTime"));
@@ -110,12 +112,12 @@ public class BAPlugin extends BotPlugin {
             BaRankInfo rankInfo = javaList.get(i - 6);
             msg.text(formatRank(rankInfo));
             if (i % 13 == 0) {
-                list.add(msg.build());
-                msg = MsgUtils.builder();
+                list.add(msg);
+                msg = TextMsg.builder();
             }
         }
         if (StringUtils.hasText(msg.build())) {
-            list.add(msg.build());
+            list.add(msg);
         }
         expiringMap.put(CMD, list);
         return list;

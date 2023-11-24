@@ -2,6 +2,7 @@ package com.neko.txbot.plugin;
 
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
+import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
 import com.neko.txbot.util.BotUtil;
 import com.neko.txbot.util.MsgUtils;
@@ -25,9 +26,9 @@ public class SystemPlugin extends BotPlugin {
         if (event.getNoAtContent().startsWith(CMD)) {
             Optional<String> oneParam = BotUtil.getOneParam(CMD, event.getNoAtContent());
             oneParam.filter(it -> it.equals("114514")).ifPresent(it -> {
-                MsgUtils msg = MsgUtils.builder();
+                TextMsg msg = TextMsg.builder();
                 msg.text("开始更新，预计需要3分钟！");
-                bot.sendGroupMsg(event.getGroupId(), event.getId(), msg.build());
+                bot.sendGroupMsg(event.getGroupId(), event.getId(), msg);
                 ProcessBuilder pb = new ProcessBuilder("sh", "/mnt/tx-qqbot/release.sh");
                 pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
@@ -35,7 +36,7 @@ public class SystemPlugin extends BotPlugin {
                 try {
                     pb.start();
                 } catch (IOException e) {
-                    bot.sendGroupMsg(event.getGroupId(), event.getId(), MsgUtils.builder().text(e.getMessage()).build());
+                    bot.sendGroupMsg(event.getGroupId(), event.getId(), TextMsg.builder().text(e.getMessage()));
                     log.error("重启失败", e);
                 }
             });

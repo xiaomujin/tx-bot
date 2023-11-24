@@ -2,6 +2,8 @@ package com.neko.txbot.exception;
 
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
+import com.neko.txbot.core.msg.BaseMsg;
+import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
 import com.neko.txbot.dto.event.message.MessageEvent;
@@ -17,19 +19,19 @@ public class ExceptionHandler {
             return block.get();
         } catch (BotException e) {
             if (StringUtils.hasText(e.getMessage())) {
-                push(event, bot, e.getMessage());
+                push(event, bot, TextMsg.builder().text(e.getMessage()));
             }
         } catch (Exception e) {
-            push(event, bot, "电波无法到达~ 再试试吧");
+            push(event, bot, TextMsg.builder().text("电波无法到达~ 再试试吧"));
             log.error(e.getMessage(), e);
         }
         return BotPlugin.MESSAGE_IGNORE;
     }
 
-    private static void push(MessageEvent event, Bot bot, String message) {
+    private static void push(MessageEvent event, Bot bot, BaseMsg message) {
         switch (event) {
             case GroupMessageEvent it -> bot.sendGroupMsg(it.getGroupId(), it.getId(), message);
-            case ChannelMessageEvent it -> bot.sendChannelMsg(it.getChannelId(), it.getId(), message);
+            case ChannelMessageEvent it -> bot.sendChannelMsg(it.getChannelId(), it.getId(), message.build());
             default -> {
             }
         }

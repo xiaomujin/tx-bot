@@ -4,8 +4,11 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
+import com.neko.txbot.core.msg.BaseMsg;
+import com.neko.txbot.core.msg.ImgMsg;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
+import com.neko.txbot.exception.BotException;
 import com.neko.txbot.exception.ExceptionHandler;
 import com.neko.txbot.util.MsgUtils;
 import com.neko.txbot.util.OkHttpUtil;
@@ -40,12 +43,12 @@ public class DailyPlugin extends BotPlugin {
     @Override
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
-            MsgUtils msg = getCmdMsg();
-            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.buildImg());
+            ImgMsg msg = getCmdMsg();
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.build());
             return MESSAGE_BLOCK;
         } else if (event.getNoAtContent().startsWith(CMD2)) {
-            MsgUtils msg = getCmd2Msg();
-            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.buildImg());
+            ImgMsg msg = getCmd2Msg();
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.build());
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
@@ -54,23 +57,19 @@ public class DailyPlugin extends BotPlugin {
     @Override
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
-            MsgUtils msg = getCmdMsg();
-            bot.sendGroupMsgImg(event.getGroupId(), event.getId(), msg.buildImg());
+            ImgMsg msg = getCmdMsg();
+            bot.sendGroupMsg(event.getGroupId(), event.getId(), msg);
             return MESSAGE_BLOCK;
         } else if (event.getNoAtContent().startsWith(CMD2)) {
-            MsgUtils msgUtils = getCmd2Msg();
-            if (msgUtils.isImg()) {
-                bot.sendGroupMsgImg(event.getGroupId(), event.getId(), msgUtils.getUrl());
-                return MESSAGE_BLOCK;
-            }
-            bot.sendGroupMsg(event.getGroupId(), event.getId(), msgUtils.build());
+            ImgMsg msg = getCmd2Msg();
+            bot.sendGroupMsg(event.getGroupId(), event.getId(), msg);
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
     }
 
-    private MsgUtils getCmdMsg() {
-        return MsgUtils.builder().img("https://api.vvhan.com/api/moyu");
+    private ImgMsg getCmdMsg() {
+        return ImgMsg.builder().img("https://api.vvhan.com/api/moyu");
 //        MsgUtils msgUtils = MsgUtils.builder();
 //        // 缓存里加载
 //        String url = expiringMap.get(CMD);
@@ -92,8 +91,8 @@ public class DailyPlugin extends BotPlugin {
 //        return msgUtils;
     }
 
-    private MsgUtils getCmd2Msg() {
-        MsgUtils msgUtils = MsgUtils.builder();
+    private ImgMsg getCmd2Msg() {
+        ImgMsg msgUtils = ImgMsg.builder();
         // 缓存里加载
         String url = expiringMap.get(CMD2);
         if (StringUtils.hasText(url)) {
@@ -104,8 +103,7 @@ public class DailyPlugin extends BotPlugin {
         String string = OkHttpUtil.get("https://v2.alapi.cn/api/zaobao?format=json&token=eCKR3lL7uFtt9PIm");
         JSONObject jsonObject = JSON.parseObject(string);
         if (jsonObject == null || jsonObject.getIntValue("code") != 200) {
-            msgUtils.text("日报获取失败！");
-            return msgUtils;
+            throw new BotException("日报获取失败！");
         }
         String imgUrl = jsonObject.getJSONObject("data").getString("image");
         expiringMap.put(CMD2, imgUrl);
