@@ -39,8 +39,7 @@ public class TarKovMarketPlugin extends BotPlugin {
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             ArrayList<MsgUtils> msg = getMsg(event.getNoAtContent());
-            for (int i = 0; i < msg.size(); i++) {
-                MsgUtils msgUtils = msg.get(i);
+            for (MsgUtils msgUtils : msg) {
                 if (msgUtils.isImg()) {
                     bot.sendGroupMsgImg(event.getGroupId(), event.getId(), msgUtils.getUrl());
                     continue;
