@@ -50,7 +50,7 @@ public class BAPlugin extends BotPlugin {
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             ArrayList<BaseMsg> msgList = getCmdMsg();
-            msgList.forEach(msg -> bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build()));
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msgList);
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;

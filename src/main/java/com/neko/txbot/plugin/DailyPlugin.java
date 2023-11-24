@@ -44,11 +44,11 @@ public class DailyPlugin extends BotPlugin {
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             ImgMsg msg = getCmdMsg();
-            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.build());
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg);
             return MESSAGE_BLOCK;
         } else if (event.getNoAtContent().startsWith(CMD2)) {
             ImgMsg msg = getCmd2Msg();
-            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg.build(), msg.build());
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg);
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;

@@ -142,10 +142,6 @@ public class Bot {
         return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders());
     }
 
-    public String sendChannelMsg(String channelId, String atMsgId, String content) {
-        return sendChannelMsg(channelId, atMsgId, content, null);
-    }
-
     public String sendChannelMsg(String channelId, String atMsgId, String content, String imgUrl) {
         JSONObject jsonObject = new JSONObject();
         if (StringUtils.hasText(atMsgId)) {
@@ -157,6 +153,34 @@ public class Bot {
             jsonObject.put("image", imgUrl);
         }
         jsonObject.put("content", content);
+        String url = TxApi.SEND_CHANNEL.replace("{channel_id}", channelId);
+        return httpPost(url, jsonObject);
+    }
+
+
+    public void sendChannelMsg(String groupOpenid, String msgId, List<BaseMsg> msgList) {
+        msgList.forEach(msg -> sendChannelMsg(groupOpenid, msgId, msg));
+    }
+
+    public String sendChannelMsg(String channelId, String msgId, BaseMsg msg) {
+        JSONObject jsonObject = new JSONObject();
+        if (StringUtils.hasText(msgId)) {
+            jsonObject.put("msg_id", msgId);
+            MessageReference messageReference = new MessageReference(msgId, true);
+            jsonObject.put("message_reference", messageReference);
+        }
+
+        switch (msg) {
+            case TextMsg it:
+                jsonObject.put("content", it.build());
+                break;
+            case ImgMsg it:
+                jsonObject.put("image", it.build());
+                break;
+            default:
+                log.error("未知消息类型: {}", msg);
+        }
+
         String url = TxApi.SEND_CHANNEL.replace("{channel_id}", channelId);
         return httpPost(url, jsonObject);
     }

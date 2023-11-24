@@ -31,7 +31,7 @@ public class ExceptionHandler {
     private static void push(MessageEvent event, Bot bot, BaseMsg message) {
         switch (event) {
             case GroupMessageEvent it -> bot.sendGroupMsg(it.getGroupId(), it.getId(), message);
-            case ChannelMessageEvent it -> bot.sendChannelMsg(it.getChannelId(), it.getId(), message.build());
+            case ChannelMessageEvent it -> bot.sendChannelMsg(it.getChannelId(), it.getId(), message);
             default -> {
             }
         }

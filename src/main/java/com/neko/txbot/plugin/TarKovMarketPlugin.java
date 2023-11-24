@@ -32,7 +32,7 @@ public class TarKovMarketPlugin extends BotPlugin {
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {
         if (event.getNoAtContent().startsWith(CMD)) {
             ArrayList<BaseMsg> msg = getMsg(event.getNoAtContent());
-            msg.forEach(it -> bot.sendChannelMsg(event.getChannelId(), event.getId(), it.build(), it.build()));
+            bot.sendChannelMsg(event.getChannelId(), event.getId(), msg);
             return MESSAGE_BLOCK;
         }
         return MESSAGE_IGNORE;
@@ -55,7 +55,7 @@ public class TarKovMarketPlugin extends BotPlugin {
         list.ifPresent(tarKovMarketVos -> {
             tarKovMarketVos.forEach(it -> {
                 TextMsg msg = TextMsg.builder();
-                ImgMsg img = ImgMsg.builder().img(it.getEnImg());
+                ImgMsg img = ImgMsg.builder().img(it.getEnImg()).proxy();
                 msgList.add(img);
                 msg.text("\n名称：").text(it.getCnName() + "\n");
                 msg.text("24h：").text(it.getChange24() + "%").text("  7d：").text(it.getChange7d() + "%\n");
