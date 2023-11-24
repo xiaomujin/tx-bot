@@ -98,7 +98,7 @@ public class BAPlugin extends BotPlugin {
         ArrayList<String> list = new ArrayList<>();
         MsgUtils msg = MsgUtils.builder();
         String mapName = seasonInfo.getJSONObject("map").getString("value");
-        msg.text("第").text(season.toString()).text("期 ").text(mapName).text(seasonInfo.getString("boss"));
+        msg.text("\n第").text(season.toString()).text("期 ").text(mapName).text(seasonInfo.getString("boss"));
         msg.text("\n开始：").text(seasonInfo.getString("startTime"));
         msg.text("\n结束：").text(seasonInfo.getString("endTime"));
         String format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now());
