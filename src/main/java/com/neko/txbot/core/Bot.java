@@ -142,22 +142,6 @@ public class Bot {
         return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders());
     }
 
-    public String sendChannelMsg(String channelId, String atMsgId, String content, String imgUrl) {
-        JSONObject jsonObject = new JSONObject();
-        if (StringUtils.hasText(atMsgId)) {
-            jsonObject.put("msg_id", atMsgId);
-            MessageReference messageReference = new MessageReference(atMsgId, true);
-            jsonObject.put("message_reference", messageReference);
-        }
-        if (StringUtils.hasText(imgUrl)) {
-            jsonObject.put("image", imgUrl);
-        }
-        jsonObject.put("content", content);
-        String url = TxApi.SEND_CHANNEL.replace("{channel_id}", channelId);
-        return httpPost(url, jsonObject);
-    }
-
-
     public void sendChannelMsg(String groupOpenid, String msgId, List<BaseMsg> msgList) {
         msgList.forEach(msg -> sendChannelMsg(groupOpenid, msgId, msg));
     }
