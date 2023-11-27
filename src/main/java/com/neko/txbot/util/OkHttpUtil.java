@@ -149,19 +149,13 @@ public class OkHttpUtil {
      */
     public static String uploadFile(OkHttpClient okHttpClient, String url,
                                     String fileKey, File file, JSONObject formDataJson, Headers headers) {
-        log.info("uploadFile url:{}, uploadFile formDataJson====> {}", url, formDataJson);
+        log.info("okHttpClient url:{}, uploadFile formDataJson ====> {}", url, formDataJson);
         // 支持传文件的同时，传参数。
         MultipartBody requestBody = getMultipartBody(fileKey, file, formDataJson);
-
         // 构建request请求体
         Request request = new Request.Builder().url(url).headers(headers).post(requestBody).build();
-
         String responseData = request(okHttpClient, url, request);
-
-        // 会在本地产生临时文件，用完后需要删除
-        if (file.exists()) {
-            file.delete();
-        }
+        log.info("okHttpClient url:{}, uploadFile responseData ====> {}", url, responseData);
         return responseData;
 
     }
@@ -213,15 +207,17 @@ public class OkHttpUtil {
      * @param formDataJson form-data参数
      */
     public static MultipartBody getMultipartBody(String fileKey, File file, JSONObject formDataJson) {
-        RequestBody fileBody = RequestBody.create(file, MultipartBody.FORM);
         MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
         // 设置传参为form-data格式
         bodyBuilder.setType(MultipartBody.FORM);
-        bodyBuilder.addFormDataPart(fileKey, file.getName(), fileBody);
         // 添加 form-data参数
         for (Map.Entry<String, Object> entry : formDataJson.entrySet()) {
             //参数通过 bodyBuilder.addFormDataPart(key, value) 添加
-            bodyBuilder.addFormDataPart(entry.getKey(), String.valueOf(entry.getValue()));
+            bodyBuilder.addFormDataPart(entry.getKey(), JSON.toJSONString(entry.getValue()));
+        }
+        if (file != null) {
+            RequestBody fileBody = RequestBody.create(file, MediaType.parse("image/jpg"));
+            bodyBuilder.addFormDataPart(fileKey, file.getName(), fileBody);
         }
         return bodyBuilder.build();
     }

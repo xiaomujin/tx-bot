@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
 import com.neko.txbot.core.msg.BaseMsg;
+import com.neko.txbot.core.msg.FileImgMsg;
 import com.neko.txbot.core.msg.ImgMsg;
 import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.MessageReference;
@@ -21,6 +22,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
@@ -140,6 +142,37 @@ public class Bot {
     public String httpPost(String url, JSONObject bodyJson) {
         OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
         return OkHttpUtil.post(okHttpClient, url, bodyJson, getHeaders());
+    }
+
+    public String httpUploadFile(String url, String fileKey, File file, JSONObject bodyJson) {
+        OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();
+        return OkHttpUtil.uploadFile(okHttpClient, url, fileKey, file, bodyJson, getHeaders());
+    }
+
+    public String sendChannelFormMsg(String channelId, String msgId, BaseMsg msg) {
+        JSONObject jsonObject = new JSONObject();
+        if (StringUtils.hasText(msgId)) {
+            jsonObject.put("msg_id", msgId);
+//            MessageReference messageReference = new MessageReference(msgId, true);
+//            jsonObject.put("message_reference", messageReference);
+        }
+        File file = null;
+        switch (msg) {
+            case TextMsg it:
+                jsonObject.put("content", it.build());
+                break;
+            case ImgMsg it:
+                jsonObject.put("image", it.build());
+                break;
+            case FileImgMsg it:
+                file = it.getFile();
+                break;
+            default:
+                log.error("未知消息类型: {}", msg);
+        }
+
+        String url = TxApi.SEND_CHANNEL.replace("{channel_id}", channelId);
+        return httpUploadFile(url, "file_image", file, jsonObject);
     }
 
     public void sendChannelMsg(String groupOpenid, String msgId, List<BaseMsg> msgList) {
