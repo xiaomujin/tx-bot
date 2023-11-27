@@ -66,7 +66,8 @@ public class DailyPlugin extends BotPlugin {
     }
 
     private ImgMsg getCmdMsg() {
-        return ImgMsg.builder().img("https://api.vvhan.com/api/moyu");
+        String fImgUrl = OkHttpUtil.getRedirectUrl("https://api.vvhan.com/api/moyu");
+        return ImgMsg.builder().img(fImgUrl).proxy();
 //        MsgUtils msgUtils = MsgUtils.builder();
 //        // 缓存里加载
 //        String url = expiringMap.get(CMD);
