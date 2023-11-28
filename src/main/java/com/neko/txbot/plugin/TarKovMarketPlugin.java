@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TarKovMarketPlugin extends BotPlugin {
     private final TarKovMarketService tarKovMarketService;
-    private static final String CMD = "/跳蚤";
+    private static final String CMD = "跳蚤";
 
     @Override
     public int onChannelMessage(Bot bot, ChannelMessageEvent event) {

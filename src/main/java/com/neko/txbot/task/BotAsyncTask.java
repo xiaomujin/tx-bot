@@ -29,7 +29,11 @@ public class BotAsyncTask {
             case "AT_MESSAGE_CREATE" -> {
                 ChannelMessageEvent messageEvent = txPayload.getD().to(ChannelMessageEvent.class);
                 String content = messageEvent.getContent();
-                messageEvent.setNoAtContent(content.replaceAll("<@!.*?>", "").trim());
+                String trim = content.replaceAll("<@!.*?>", "").trim();
+                if (trim.startsWith("/")) {
+                    trim = trim.substring(1);
+                }
+                messageEvent.setNoAtContent(trim);
                 messageEvent.setEventType(EventType.CHANNEL);
                 for (BotPlugin botPlugin : bot.getBotPlugins()) {
                     if (ExceptionHandler.with(bot, messageEvent, () -> botPlugin.onChannelMessage(bot, messageEvent)) == BotPlugin.MESSAGE_BLOCK) {
@@ -40,7 +44,11 @@ public class BotAsyncTask {
             case "GROUP_AT_MESSAGE_CREATE" -> {
                 GroupMessageEvent messageEvent = txPayload.getD().to(GroupMessageEvent.class);
                 String content = messageEvent.getContent();
-                messageEvent.setNoAtContent(content.replaceAll("<@!.*?>", "").trim());
+                String trim = content.replaceAll("<@!.*?>", "").trim();
+                if (trim.startsWith("/")) {
+                    trim = trim.substring(1);
+                }
+                messageEvent.setNoAtContent(trim);
                 messageEvent.setEventType(EventType.GROUP);
                 for (BotPlugin botPlugin : bot.getBotPlugins()) {
                     if (ExceptionHandler.with(bot, messageEvent, () -> botPlugin.onGroupMessage(bot, messageEvent)) == BotPlugin.MESSAGE_BLOCK) {

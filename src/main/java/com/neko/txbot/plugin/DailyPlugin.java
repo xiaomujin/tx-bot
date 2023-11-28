@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 public class DailyPlugin extends BotPlugin {
-    private static final String CMD = "/日历";
-    private static final String CMD2 = "/日报";
+    private static final String CMD = "日历";
+    private static final String CMD2 = "日报";
 
     private final ExpiringMap<String, String> expiringMap = ExpiringMap.builder()
             //允许更新过期时间值,如果不设置variableExpiration，不允许后面更改过期时间,一旦执行更改过期时间操作会抛异常UnsupportedOperationException

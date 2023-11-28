@@ -18,7 +18,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class SystemPlugin extends BotPlugin {
-    private static final String CMD = "/版本更新";
+    private static final String CMD = "版本更新";
 
     @Override
     public int onGroupMessage(Bot bot, GroupMessageEvent event) {
