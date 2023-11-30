@@ -28,7 +28,7 @@ public class SystemPlugin extends BotPlugin {
                 TextMsg msg = TextMsg.builder();
                 msg.text("开始更新，预计需要3分钟！");
                 bot.sendGroupMsg(event.getGroupId(), event.getId(), msg);
-                ProcessBuilder pb = new ProcessBuilder("sh", "/mnt/tx-qqbot/release.sh");
+                ProcessBuilder pb = new ProcessBuilder("sh", "/mnt/qqbot/tx_bot/release.sh");
                 pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                 pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
