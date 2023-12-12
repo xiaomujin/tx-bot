@@ -19,7 +19,6 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
