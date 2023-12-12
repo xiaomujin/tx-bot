@@ -192,7 +192,7 @@ public class PuppeteerUtil {
         String screenshot = "";
         try {
             File file = new File(path).getParentFile();
-            if (!file.exists()) {
+            if (file != null && !file.exists()) {
                 boolean mkdir = file.mkdirs();
                 if (mkdir) {
                     log.info("创建目录成功:{}", file.getAbsolutePath());
@@ -304,9 +304,6 @@ public class PuppeteerUtil {
             browser.close();
         }
     }
-
-
-
 
 
     //-------------------------------------- 补丁 -------------------------------------------------
