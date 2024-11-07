@@ -34,4 +34,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: txbot.jar
-        path: target/txbot-0.0.1.jar
+        path: target/tx-bot-0.0.1.jar
