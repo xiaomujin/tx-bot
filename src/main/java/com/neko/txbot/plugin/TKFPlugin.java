@@ -1,16 +1,11 @@
 package com.neko.txbot.plugin;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.core.Bot;
 import com.neko.txbot.core.BotPlugin;
-import com.neko.txbot.core.msg.ImgMsg;
 import com.neko.txbot.core.msg.TextMsg;
 import com.neko.txbot.dto.event.message.ChannelMessageEvent;
 import com.neko.txbot.dto.event.message.GroupMessageEvent;
-import com.neko.txbot.exception.BotException;
 import com.neko.txbot.menu.Regex;
-import com.neko.txbot.util.OkHttpUtil;
 import com.neko.txbot.util.RegexUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -22,7 +17,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,7 +60,7 @@ public class TKFPlugin extends BotPlugin {
         if (textMsg != null) {
             return textMsg;
         }
-        Document document = Jsoup.connect("https://t0t.co/proxy/docs.google.com/spreadsheets/d/e/2PACX-1vRwLysnh2Tf7h2yHBc_bpZLQh6DiFZtDqyhHLYP022xolQUPUHkSModV31E5Y7cLh_8LZGexpXy2VuH/pubhtml/sheet?headers=false&gid=1420050773").get();
+        Document document = Jsoup.connect("https://9d33d34f.goon-98b.pages.dev/proxy/https://docs.google.com/spreadsheets/d/e/2PACX-1vR-wIQI351UH85ILq5KiCLMMrl0uHRmjDinBCt6nXGg5exeuCxQUf8DTLJkwn7Ckr8-HmLyEIoapBE5/pubhtml/sheet?headers=false&gid=1420050773").get();
         Elements td = document.getElementsByTag("td");
         String mapName = td.get(2).text();
         String time = td.get(3).text();
