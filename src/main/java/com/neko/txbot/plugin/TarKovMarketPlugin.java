@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +56,11 @@ public class TarKovMarketPlugin extends BotPlugin {
         Optional<List<TarKovMarketVo>> list = oneParam.flatMap(tarKovMarketService::search);
         list.ifPresent(tarKovMarketVos -> tarKovMarketVos.forEach(it -> {
             TextMsg msg = TextMsg.builder();
-            ImgMsg img = ImgMsg.builder().img(it.getEnImg()).proxy();
+            ImgMsg img = ImgMsg.builder().img(it.getEnImg());
             msgList.add(img);
             msg.text("\n名称：").text(it.getCnName() + "\n");
+            String format = it.getUpdated().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            msg.text("时间：").text(format + "\n");
             msg.text("24h：").text(it.getChange24() + "%").text("  7d：").text(it.getChange7d() + "%\n");
             msg.text("基础价格：").text(it.getBasePrice() + "₽" + "\n");
             msg.text(it.getTraderName()).text("：").text(it.getTraderPrice() + it.getTraderPriceCur() + "\n");

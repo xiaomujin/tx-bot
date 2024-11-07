@@ -25,7 +25,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class TarKovMarketService {
-    public static final String TAR_KOV_MARKET_URL = "https://api.tarkov-market.app/api/items?lang=cn&search=%s&tag=&sort=name&sort_direction=desc&trader=&skip=0&limit=3";
+    public static final String TAR_KOV_MARKET_URL = "https://api.tarkov-market.app/api/items?lang=cn&search=%s&tag=&sort=name&sort_direction=desc&trader=&skip=0&limit=2";
+//    public static final String TAR_KOV_MARKET_URL = "https://tarkov-market.com/api/be/items?lang=cn&search=%s&tag=&sort=name&sort_direction=desc&trader=&skip=0&limit=2";
 
     public Optional<List<TarKovMarketVo>> search(String text) {
         OkHttpClient okHttpClient = OkHttpUtil.getOkHttpClient();

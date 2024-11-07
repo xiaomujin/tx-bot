@@ -3,10 +3,7 @@ package com.neko.txbot.core;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.neko.txbot.config.BotConfig;
-import com.neko.txbot.core.msg.BaseMsg;
-import com.neko.txbot.core.msg.FileImgMsg;
-import com.neko.txbot.core.msg.ImgMsg;
-import com.neko.txbot.core.msg.TextMsg;
+import com.neko.txbot.core.msg.*;
 import com.neko.txbot.dto.event.message.MessageReference;
 import com.neko.txbot.menu.Intent;
 import com.neko.txbot.menu.OpCode;
@@ -250,6 +247,12 @@ public class Bot {
                     return "";
                 }
                 jsonObject.put("media", groupImgInfo);
+                break;
+            case MarkdownMsg it:
+                jsonObject.put("msg_type", 2);
+                JSONObject markdown = new JSONObject();
+                markdown.put("content", "# 标题 \n## 简介很开心 \n内容[\uD83D\uDD17腾讯](https://www.qq.com)");
+                jsonObject.put("markdown", markdown);
                 break;
             default:
                 log.error("未知消息类型: {}", msg);

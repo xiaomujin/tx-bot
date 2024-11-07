@@ -15,7 +15,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         log.info("系统启动成功");
-        safeRun(PuppeteerUtil::getBrowser);
+//        safeRun(PuppeteerUtil::getBrowser);
     }
 
     private void safeRun(Consumer fun) {
